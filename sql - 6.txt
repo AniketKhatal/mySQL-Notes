@@ -1,0 +1,1108 @@
+Nested tables :-
+
+Table within another table
+
+A table is represented as a column within another table
+
+
+SQL> create type address_ty as object(stno int,stname varchar(20),city varchar(20))
+  2  /
+
+Type created.
+
+SQL> desc address_ty
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ STNO                                                           NUMBER(38)
+ STNAME                                                         VARCHAR2(20)
+ CITY                                                           VARCHAR2(20)
+
+SQL> create table vendors(vencode varchar(5),venname varchar(15),venaddress address_ty,venmobile numeric(10));
+
+Table created.
+
+SQL> desc vendors
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ VENCODE                                                        VARCHAR2(5)
+ VENNAME                                                        VARCHAR2(15)
+ VENADDRESS                                                     ADDRESS_TY
+ VENMOBILE                                                      NUMBER(10)
+
+SQL> select column_name,data_type from user_tab_columns where table_name='VENDORS';
+
+COLUMN_NAME
+------------------------------
+DATA_TYPE
+----------------------------------------------------------------------------------------------------
+VENCODE
+VARCHAR2
+
+VENNAME
+VARCHAR2
+
+VENADDRESS
+ADDRESS_TY
+
+
+COLUMN_NAME
+------------------------------
+DATA_TYPE
+----------------------------------------------------------------------------------------------------
+VENMOBILE
+NUMBER
+
+
+SQL> insert into vendors values('V001','ABC ltd',address_ty(10,'brigade stree','blr'),12345);
+
+1 row created.
+
+SQL> select * from vendors;
+
+VENCO VENNAME
+----- ---------------
+VENADDRESS(STNO, STNAME, CITY)
+----------------------------------------------------------------------------------------------------
+ VENMOBILE
+----------
+V001  ABC ltd
+ADDRESS_TY(10, 'brigade stree', 'blr')
+     12345
+
+
+SQL> select attr_name,length,attr_type_name from user_type_attrs where type_name='ADDRESS_TY';
+
+ATTR_NAME                          LENGTH ATTR_TYPE_NAME
+------------------------------ ---------- ------------------------------
+STNO                                      INTEGER
+STNAME                                 20 VARCHAR2
+CITY                                   20 VARCHAR2
+
+
+SQL> drop type address_ty force;
+
+Type dropped.
+
+SQL> select * from vendors;
+
+VENCO VENNAME          VENMOBILE
+----- --------------- ----------
+V001  ABC ltd              12345
+
+SQL> desc vendors
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ VENCODE                                                        VARCHAR2(5)
+ VENNAME                                                        VARCHAR2(15)
+ VENMOBILE                                                      NUMBER(10)
+
+============================================================================================
+
+Partition :-
+
+A single logical table can be split into n number of pieces, each piece is called as partition
+
+Different types of partitions :
+
+Range partitions
+
+List partitions
+
+Hash partitions
+
+sub partitions
+
+A non-partitioned table cannot be partitioned later
+
+Range partition :-
+
+create table <tablename>(columndefinition1 , columndefinition2,..)
+partition by range(columnname)
+(partition <partitionname> values less than(value),partition <partitionname> values less than(value),...);
+
+To add a partition :-
+
+alter table <tablename> add partition <partitionname> values less than(value);
+
+To split partition :-
+
+alter table <tablename> split partition <partitionname> at(value) into (partition1,partition2...);
+
+To move partition :-
+
+alter table <tablename> move partition <partitionname> to tablespace <tablespacename>;
+
+To remove a partition :-
+
+alter table <tablename> drop partition <partitionname>;
+
+Advantages :-
+
+- Easy to handle the data independently
+
+- Easy to take backup
+
+Eg:
+
+create partition emp_partition(empno int primary key,ename varchar(15),job varchar(15),sal number(10,2),
+deptno int) partition by range(sal)
+(partition part1 values less than(1000),partition part2 values less than(2000),
+partition part3 values less than(3000));
+
+insert into emp_partition values(100,'aa','bb',800,10);
+
+insert into emp_partition values(101,'bb','cc',950,20);
+
+insert into emp_partition values(102,'cc','dd',1250,20);
+
+insert into emp_partition values(103,'dd','ee','2850,30);
+
+select * from emp_partition;
+
+select * from emp_partition partition(part1);
+
+select * from emp_partition partition(part2);
+
+select * from emp_partition partition(part3);
+
+insert into emp_partition values(104,'ee','ff',3500,40);
+
+Here row will not be inserted, because there is no partition to insert more than 3000
+
+alter table emp_partition add partition part4 values less than(maxvalue);
+
+insert into emp_partition values(104,'ee','ff',3500,40);
+
+						4000
+
+						4500
+						..
+					......
+
+select * from emp_partition;
+
+Whenn we use mavalue to add a partition , that will be the last partition
+
+select * from emp_partition partition(part4);
+
+alter table emp_partition move partition part3 to tablespace SYSTEM;
+
+alter table emp_partiton drop partition part3;
+
+When we drop an entire table then all the table properties also dropped 
+
+...................................................................................................
+
+NORMALIZATION :-
+
+Key Attributes and Non-key Attributes
+
+Types of Relationships
+
+Normalization -def
+
+Normal Forms
+
+Key Attribute is PRIMARY KEY
+
+PRIMARY KEY does not allowed duplicate data and null value
+
+A table can have only one PRIMARY KEY
+
+All non-key Attributes that depends on Key Attributes
+
+_______________________________________
+(pk)
+EMPID	ENAME	JOB	SAL	DEPTNO
+_______________________________________
+
+
+
+
+_______________________________________
+....	...........................
+
+K	NK
+
+Types of Relationships :
+
+One  - to - one
+
+One - to - many
+
+Many -to - many
+
+NORMALIZATION :-
+
+- To reduce the redunanc(repeted data , duplicate data)
+
+- To simplify all Dependancies
+
+- To represent the data in simplest way
+
+Normal Forms :-
+
+Unnormalized form
+
+|
+
+1st NF
+
+|
+
+2nd NF
+
+|
+
+3rd NF
+
+|
+
+BCNF (Boyce codd NF)
+
+|
+
+4th NF
+
+|
+
+5th NF
+
+___________________________________________
+
+PID	PNAME	EMPID	ENAME	RC	HR
+___________________________________________
+
+1000	BANKING	1	AAA	W	40
+
+		2	BBB	X	50
+
+		3	CCC	Y	60
+............................................	1st Row
+
+2000	WEB	2	BBB	X	50
+
+		4	DDD	Z	70
+____________________________________________	2nd Row
+
+This table is in unnormalized form
+
+- identify multi-valued attributes
+
+- identify redundancy (repeated data / duplicate data)
+
+To simplify these we go for 1st NF
+
+By giving fixed length record we simplify multi-valued attributes
+
+___________________________________________
+
+PID	PNAME	EMPID	ENAME	RC	HR
+___________________________________________
+
+1000	BANKING	1	AAA	W	40
+
+1000	BANKING	2	BBB	X	50
+
+1000	BANKING	3	CCC	Y	60
+
+2000	WEB	2	BBB	X	50
+
+2000	WEB	4	DDD	Z	70
+____________________________________________	
+
+By imposing PRIMARY KEY (Key Attribute) we simplify redundancy
+
+___________________________________________
+(pk)		(pk)
+PID	PNAME	EMPID	ENAME	RC	HR
+___________________________________________
+
+1000	BANKING	1	AAA	W	40
+
+1000	BANKING	2	BBB	X	50
+
+1000	BANKING	3	CCC	Y	60
+
+2000	WEB	2	BBB	X	50
+
+2000	WEB	4	DDD	Z	70
+____________________________________________
+....	....	....	....	....	...
+K	NK	K	NK	NK	NK
+
+This table is in 1st NF
+
+- identify partial dependancy
+
+partial dependancy means, A non-key attribues depending on part of key attribute
+
+To simplify partial dependancy we go for 2nd NF
+
+____________			________________
+(pk)	(pk)			(pk)
+PID	EMPID			PID	PNAME
+_____________			________________
+
+				1000	BANKING
+
+				2000	WEB
+_____________			________________
+				..	..
+				K	NK
+				
+				This table is in 2nd Nf,3rd NF,BCNF,...
+
+__________________________
+(pk)
+EMPID	ENAME	RC	HR
+__________________________
+
+1	AAA	W	40
+
+2	BBB	X	50
+
+3	CCC	Y	60
+
+4	DDD	Z	70
+__________________________
+...	...	....	..
+K	NK	NK	NK
+
+This table is in 2nd NF
+
+- identify transitive dependancy
+
+transitive dependancy means, a non-key attribute that depends on another non-key attribute
+
+To simplify transitive dependancy we go for 3rd NF
+
+__________
+
+RC	HR
+__________
+
+W	40
+
+X	50
+
+Y	60
+
+Z	70
+__________
+
+This table is in 3rd NF
+
+_____________		__________________________		__________
+(pk)			(pk)
+PID	PNAME		EMPID	ENAME	RC	HR		RC	HR
+_____________		___________________________		___________		
+
+1000	BANKING		1	AAA	W	40		W	40
+
+2000	WEB		2	BBB	X	50		X	50
+
+			3	CCC	Y	60		Y	60
+______________
+			4	DDD	Z	70		Z	70
+			___________________________		___________
+
+======================================================================================================
+
+PLSQL :-
+
+- stands for Procedural language for SQL
+
+- Encapsulation of all SQL statements and Control statements
+
+- PL/SQL programming is in the form of anonymous blocks
+
+Declarative block
+
+Executable block
+
+Exception handling block
+
+All variable declarations done in declarative block
+
+All executable statements can be written in executable block
+
+All exceptional statements can be written in exception handling block
+
+	Exception is nothing but runtime error
+
+	Exception occurs during execution of the program
+
+	Exception handling block is used to stop the program from abnormal termination
+
+Structure of a PL/SQL program :-
+
+declare
+..
+..
+begin
+..
+..
+	exception
+	when exceptionname then
+	..
+	..
+end;
+/
+
+- PL/SQL block (begin .. end) does not allowed DDL,DCL commands
+
+- PL/SQL block (begin .. end) allows DML,TCL commands
+
+- All SQL statements can be executed by SQL statement executor
+
+- All PL/SQL statements can be executed by PL/SQL engine
+
+DBMS_OUTPUT.PUT_LINE() is the statement used to print a value on the screen
+
+DBMS_OUTPUT is the package
+
+PUT_LINE() is the method
+
+begin
+dbms_output.put_line('Welcome to PL/SQL Programming...');
+end;
+/
+
+before executing PL/SQL program , we should start PL/SQL engine
+
+To start PL/SQL engine :
+
+set serveroutput on
+
+/
+
+=======================================================================
+
+
+SQL> begin
+  2  dbms_output.put_line('Welcome to Programmability....');
+  3  end;
+  4  /
+
+PL/SQL procedure successfully completed.
+
+SQL> set serveroutput on
+SQL> /
+Welcome to Programmability....
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Welcome to Programmability....
+
+PL/SQL procedure successfully completed.
+
+===============================================================================
+
+Variables are used to store some value, a variable may take different values in through out execution of the program
+
+- variablename must be begin with a letter
+
+- spaces does not allowed
+
+- underscores can be allowed
+
+We can use all datatypes of SQL to declare variables
+
+All variable declarations done in declarative block
+
+Variable declaration is as follows :
+
+declare
+variablename datatype;
+
+Eg:-
+
+declare
+a number;
+
+Variable initialization is as follows :
+
+variablename datatype := value;
+
+Eg:-
+
+declare
+a number:=100;
+
+Operators :
+
+Concatencatenation operator   ||
+
+Which is used to merge more than one string into a single expression
+
+Assignment operator   :=
+
+which is used to store some value into the variable
+
+Arithmetic operators  :  +   -  *  /
+
+Relational operators	<  >  <=  >=  =  <>
+
+Logical operators	and	or	not
+
+			T T T	T F T	T F
+
+			T F F	F T T	F T
+
+			F T F	F F F
+
+			F F F	T T T
+
+
+SQL> declare
+  2  a number :=100;
+  3  begin
+  4  dbms_output.put_line(a);
+  5  end;
+  6  /
+100
+
+PL/SQL procedure successfully completed.
+
+SQL> declare
+  2  a number :=100;
+  3  begin
+  4  dbms_output.put_line(a);
+  5  dbms_output.put_line('Value of a = '||a);
+  6  end;
+  7  /
+100
+Value of a = 100
+
+PL/SQL procedure successfully completed.
+
+===================================================================
+
+& symbol is used to read a value from keyboard
+
+....................................................................
+
+
+SQL> declare
+  2  a number;
+  3  begin
+  4  a:=&a;
+  5  dbms_output.put_line('Value of a  = '||a);
+  6  end;
+  7  /
+Enter value for a: 10
+old   4: a:=&a;
+new   4: a:=10;
+Value of a  = 10
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for a: 20
+old   4: a:=&a;
+new   4: a:=20;
+Value of a  = 20
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for a: 30
+old   4: a:=&a;
+new   4: a:=30;
+Value of a  = 30
+
+PL/SQL procedure successfully completed.
+
+================================================================================================
+
+-- symbol is used to writing comment lines
+
+comment line which is not executable at runtime
+
+=================================================================================================
+
+
+SQL> declare
+  2  a number;
+  3  b number;
+  4  begin
+  5  a:=&a;
+  6  b:=&b;
+  7  dbms_output.put_line('Addition     = '||a+b);
+  8  dbms_output.put_line('Subtraction  = '||a-b);
+  9  dbms_output.put_line('Mul          = '||a*b);
+ 10  dbms_output.put_line('Division     = '||a/b);
+ 11  end;
+ 12  /
+Enter value for a: 10
+old   5: a:=&a;
+new   5: a:=10;
+Enter value for b: 20
+old   6: b:=&b;
+new   6: b:=20;
+declare
+*
+ERROR at line 1:
+ORA-06502: PL/SQL: numeric or value error: character to number conversion error
+ORA-06512: at line 7
+
+
+SQL> declare
+  2  a number;
+  3  b number;
+  4  begin
+  5  a:=&a;
+  6  b:=&b;
+  7  dbms_output.put_line('Addition     = '||to_char(a+b));
+  8  dbms_output.put_line('Addition     = '||to_char(a-b));
+  9  dbms_output.put_line('Addition     = '||to_char(a*b));
+ 10  dbms_output.put_line('Addition     = '||to_char(a/b));
+ 11  end;
+ 12
+ 13  /
+Enter value for a: 10
+old   5: a:=&a;
+new   5: a:=10;
+Enter value for b: 20
+old   6: b:=&b;
+new   6: b:=20;
+Addition     = 30
+Addition     = -10
+Addition     = 200
+Addition     = .5
+
+PL/SQL procedure successfully completed.
+
+===================================================================================
+
+When we write SELECT statement in PL/SQL block (begin .. end), INTO clause is required to get values into local variablelist
+
+select columnlist INTO localvariablelist
+from tablename;
+
+Eg:-
+
+
+SQL> declare
+  2  eno number;
+  3  en varchar(20);
+  4  j varchar(20);
+  5  begin
+  6  select empno,ename,job from emp where ename='JONES';
+  7  dbms_output.put_line('Empno    = '||eno);
+  8  dbms_output.put_line('Ename    = '||en);
+  9  dbms_output.put_line('Job      = '||j);
+ 10  end;
+ 11  /
+select empno,ename,job from emp where ename='JONES';
+*
+ERROR at line 6:
+ORA-06550: line 6, column 1:
+PLS-00428: an INTO clause is expected in this SELECT statement
+
+
+SQL> declare
+  2  eno number;
+  3  en varchar(20);
+  4  j varchar(20);
+  5  begin
+  6  select empno,ename,job INTO eno,en,j from emp where ename='JONES';
+  7  dbms_output.put_line('Empno    = '||eno);
+  8  dbms_output.put_line('Ename    = '||en);
+  9  dbms_output.put_line('Job      = '||j);
+ 10  end;
+ 11  /
+Empno    = 7566
+Ename    = JONES
+Job      = MANAGER
+
+PL/SQL procedure successfully completed.
+
+SQL> declare
+  2  eno number;
+  3  en varchar(20);
+  4  j varchar(20);
+  5  begin
+  6  eno:=&eno;
+  7  select empno,ename,job into eno,en,j from emp where empno=eno;
+  8  dbms_output.put_line('Empno    = '||eno||'   '||'Ename     = '||en||'   '||'Job   = '||j);
+  9  end;
+ 10  /
+Enter value for eno: 7902
+old   6: eno:=&eno;
+new   6: eno:=7902;
+Empno    = 7902   Ename     = FORD   Job   = ANALYST
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7839
+old   6: eno:=&eno;
+new   6: eno:=7839;
+Empno    = 7839   Ename     = KING   Job   = PRESIDENT
+
+PL/SQL procedure successfully completed.
+
+==========================================================================================
+
+State True or False 
+
+1.DDL commands can be used in PL/SQL block
+
+2.PL/SQL an oracle tool can do computations without referring to oracle
+
+3.The PL/SQL engine executes the statements in the PL/SQL block
+
+4.A PL/SQL block can be divided into three parts - declarative block,executable,exception handling block
+
+.......................................................
+
+Fill in Blanks :
+
+1.PL/SQL supports all SQL ____________
+
+2.PL/SQL engine executes only the _______________ statements
+
+3.PL/SQL engine can either reside in oracle _______________ or oracle_________
+
+4.PL/SQL text can contain group of characters known as_______ units
+
+=================================================================================
+
+PL/SQL Attributes :-
+
+Attributes allow us to refer to datatypes and objects from the database
+
+%type
+%rowtype
+
+%type is used when declaring variables that refer to the database columns
+
+Eg:
+
+eno number;
+
+or
+
+eno emp.empno%type;
+
+Here we referring datatype of empno column in emp table to variable "eno"
+
+- We need not know the exact datatype of the column
+
+- if the database definition of column is changed, then the datatype of column changes accordingly at runtime
+
+%rowtype :-
+
+provides a record type that represents a row in a table
+
+The record can store an entire row of data selected from the table or fetched by a cursor
+
+Eg:
+
+e emp%rowtype;
+
+=========================================================================
+
+
+SQL> declare
+  2  eno emp.empno%type;
+  3  en emp.ename%type;
+  4  j emp.job%type;
+  5  s emp.sal%type;
+  6  begin
+  7  eno:=&eno;
+  8  select empno,ename,job,sal into eno,en,j,s from emp where empno=eno;
+  9  dbms_output.put_line('Empno ='||eno||' '||'Ename ='||en||' '||'Job ='||j||' '||'Salary ='||s);
+ 10  end;
+ 11
+ 12  /
+Enter value for eno: 7902
+old   7: eno:=&eno;
+new   7: eno:=7902;
+Empno =7902 Ename =FORD Job =ANALYST Salary =3000
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7639
+old   7: eno:=&eno;
+new   7: eno:=7639;
+declare
+*
+ERROR at line 1:
+ORA-01403: no data found
+ORA-06512: at line 8
+
+
+SQL> /
+Enter value for eno: 7499
+old   7: eno:=&eno;
+new   7: eno:=7499;
+Empno =7499 Ename =ALLEN Job =SALESMAN Salary =1600
+
+PL/SQL procedure successfully completed.
+
+SQL> declare
+  2  eno emp.empno%type;
+  3  s emp.sal%type;
+  4  c emp.comm%type;
+  5  n number;
+  6  begin
+  7  eno:=&eno;
+  8  select sal,nvl(comm,0) into s,c from emp where empno=eno;
+  9  n:=s+c;
+ 10  dbms_output.put_line('Empno   = '||eno||'  '||'Salary   = '||s||'  '||'Comm   = '||c);
+ 11  dbms_output.put_line('Net Salary   = '||n);
+ 12  end;
+ 13  /
+Enter value for eno: 7521
+old   7: eno:=&eno;
+new   7: eno:=7521;
+Empno   = 7521  Salary   = 1250  Comm   = 500
+Net Salary   = 1750
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7499
+old   7: eno:=&eno;
+new   7: eno:=7499;
+Empno   = 7499  Salary   = 1600  Comm   = 300
+Net Salary   = 1900
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7369
+old   7: eno:=&eno;
+new   7: eno:=7369;
+Empno   = 7369  Salary   = 800  Comm   = 0
+Net Salary   = 800
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7902
+old   7: eno:=&eno;
+new   7: eno:=7902;
+Empno   = 7902  Salary   = 3000  Comm   = 0
+Net Salary   = 3000
+
+PL/SQL procedure successfully completed.
+
+========================================================================================
+
+State True or False :-
+
+1. Is the following a valid declaration?
+
+	name,state varchar(40);
+
+2.The keyword "default" can be used to replace the assignment operator
+
+3.%type and %rowtype are attributes supported by PL/SQL
+
+4.A binary_integer is used to store a signed integer value
+
+5.When the number of records to be inserted is indefinite varray could be used
+
+
+...................................
+
+Fill in Blanks 
+
+1.Boolean datatypes are used to store ___________
+
+2.Variables and constants should be declared in the ________ part of PL/SQL block
+
+3.PL/SQL datatypes consists of scalar and ____________ datatypes
+
+4.The ___________ attribute provides aa record type that represents a row in a table
+
+==========================================================================================
+
+Control Statements :-
+
+if - else
+
+if condition then
+..
+..
+else
+..
+..
+end if
+
+
+SQL> declare
+  2  eno emp.empno%type;
+  3  s emp.sal%type;
+  4  c emp.comm%type;
+  5  n number;
+  6  begin
+  7  eno:=&eno;
+  8  select sal,nvl(comm,0) into s,c from emp where empno=eno;
+  9  if s < 1000 then
+ 10  dbms_output.put_line('Salary is Very Low ...'||s);
+ 11  else
+ 12  dbms_output.put_line('Calculating Net Salary  ...');
+ 13  n:=s+c;
+ 14  dbms_output.put_line('Salary  ='||s||' '||'Comm = '||c||'  '||'Net Salary  = '||n);
+ 15  end;
+ 16  /
+Enter value for eno: 7902
+old   7: eno:=&eno;
+new   7: eno:=7902;
+end;
+   *
+ERROR at line 15:
+ORA-06550: line 15, column 4:
+PLS-00103: Encountered the symbol ";" when expecting one of the following:
+if
+
+
+SQL> declare
+  2  eno emp.empno%type;
+  3  s emp.sal%type;
+  4  c emp.comm%type;
+  5  n number;
+  6  begin
+  7  eno:=&eno;
+  8  select sal,nvl(comm,0) into s,c from emp where empno=eno;
+  9  if s < 1000 then
+ 10  dbms_output.put_line('Salary is Very Low ...'||s);
+ 11  else
+ 12  dbms_output.put_line('Calculating Net Salary  ...');
+ 13  n:=s+c;
+ 14  dbms_output.put_line('Salary  ='||s||' '||'Comm = '||c||'  '||'Net Salary  = '||n);
+ 15  end if;
+ 16  end;
+ 17  /
+Enter value for eno: 7902
+old   7: eno:=&eno;
+new   7: eno:=7902;
+Calculating Net Salary  ...
+Salary  =3000 Comm = 0  Net Salary  = 3000
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7839
+old   7: eno:=&eno;
+new   7: eno:=7839;
+Calculating Net Salary  ...
+Salary  =5000 Comm = 0  Net Salary  = 5000
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7499
+old   7: eno:=&eno;
+new   7: eno:=7499;
+Calculating Net Salary  ...
+Salary  =1600 Comm = 300  Net Salary  = 1900
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7521
+old   7: eno:=&eno;
+new   7: eno:=7521;
+Calculating Net Salary  ...
+Salary  =1250 Comm = 500  Net Salary  = 1750
+
+PL/SQL procedure successfully completed.
+
+==========================================================================
+
+declare
+orderstatus order_master.o_status%type;
+begin
+select o_status into orderstatus from order_master where orderno='o001';
+if orderstatus ='p' then
+dbms_output.put_line('pending order');
+else
+dbms_output.put_line('Completed order');
+end if;
+end;
+/
+
+declare
+orderstatus order_master.o_status%type;
+begin
+select o_status into orderstatus from order_master where orderno='o001';
+if orderstatus ='p' then
+update order_master set odate='20-DEC-13' where orderno='O001';
+else
+update order_master set odate=sysdate where orderno='o001';
+end if;
+end;
+/
+
+==============================================================================
+
+elsif :-
+
+if condition then
+..
+..
+elsif condition then
+..
+..
+elsif condition then
+.
+..
+elsif condition then
+.
+..
+end if
+
+
+SQL> declare
+  2  eno emp.empno%type;
+  3  s emp.sal%type;
+  4  c emp.comm%type;
+  5  n number;
+  6  begin
+  7  eno:=&eno;
+  8  select sal,nvl(comm,0) into s,c from emp where empno=eno;
+  9  if s<1000 then
+ 10  dbms_output.put_line('Salary is Very Low ...'||s);
+ 11  elsif s>1000 and s<2500 then
+ 12  dbms_output.put_line('Calculating net salary ...');
+ 13  n:=s+c;
+ 14  dbms_output.put_line('Salary  ='||s||' '||'Comm = '||c||' '||'Net Salary  = '||n);
+ 15  else
+ 16  dbms_output.put_line('Salary Exceeds.....'||s);
+ 17  end if;
+ 18  end;
+ 19  /
+Enter value for eno: 7369
+old   7: eno:=&eno;
+new   7: eno:=7369;
+Salary is Very Low ...800
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7499
+old   7: eno:=&eno;
+new   7: eno:=7499;
+Calculating net salary ...
+Salary  =1600 Comm = 300 Net Salary  = 1900
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7839
+old   7: eno:=&eno;
+new   7: eno:=7839;
+Salary Exceeds.....5000
+
+PL/SQL procedure successfully completed.
+
+============================================================================================
+

@@ -1,0 +1,1357 @@
+DDL
+	Create database <databasename>;
+
+	use <existing databasename>;
+
+	create table <tablename>(columndefinition1,columndefinition2,..);
+
+		columndefinition means columnname datatype
+
+		- Tablename / Columnname must be begin with a letter
+
+		- Spaces does not allowed
+
+		- Underscores can be allowed
+
+		Datatypes :-
+		int
+		numeric
+		varchar,char
+		date
+	
+	alter table <tablename> add columnname datatype,columnname datatype,..;
+
+	alter table <tablename> drop column <columnname>;
+
+	alter table <tablename> alter column <columnname> datatype;
+
+	exec sp_rename 'Tablename.Columnname','New columnname','Column';
+
+	exec sp_rename 'Old tablename','New tablename';
+
+	truncate table <existing tablename>;
+
+	drop table <existing tablename>;
+
+All DDL commands are automatically commited
+
+...................................................................
+
+DML
+	insert into <tablename> values(values of the columns...);
+	
+	If we want to inserting rows for selected columns in an existing table then we specify columnlist 	before keyword "values"
+
+	insert into <tablename>(columnlist) values(values of the columns..);
+
+	When we inserted rows for selected columns in an existing table then rest of columns will be taking null values automatically
+
+	null is a system unknown value / unsigned value / unavailability value
+
+	zero is not equivalent to null value
+
+	update <tablename> set columnname = value;
+
+	update <tablename> set columnname = value where <condition>;
+	
+	update <tablename> set columnname = value where rownum <5;
+
+	delete from <existing tablename>;
+
+	delete from <existing tablename> where <condition>;
+
+	delete from <existing tablename> where rownum =1;
+
+	delete from <existing tablename> where rowid='  ...  ';
+
+Here ROWNUM, ROWID are psuedo columns, psuedo column behaves like a table column , but it is not stored in the table
+
+
+TRUNCATE						DELETE
+
+DDL command						DML command
+
+All Rows are deleted					All Rows are deleted
+
+Auto commited						Explicitly commited
+
+Rows cannot be rollback 				Rows can be rollback before commit
+
+Can't have where clause to delete selected rows		Can have where clause to delete selected rows
+
+Eg:							Eg:
+
+truncate table T1;					delete from T1;
+
+							delete from T1 where sno=10;
+
+----------------------------------------------------------------------------------------------------
+
+DEFAULT keyword :- To assign some value to the column
+
+create table T1(sno int default 10,sname varchar(20));
+
+insert into T1(sname) values('AA');
+
+insert into T1 values(11,'BB');
+
+insert into T1(sname) values('CC');
+
+insert into T1 values(12,'DD');
+
+insert into T1(sname) values('EE');
+
+select * from T1;
+
+10 AA
+11 BB
+10 CC
+12 DD
+10 EE
+
+---------------------------------------------------------------------------------------
+
+SELECT
+	select columnlist from <existing tablename>;
+
+	select columnlist from <existing tablename> where <condition>;
+
+	select columnlist from <existing tablename> where rownum <=10;
+
+	create table <new tablename> as select columnlist from <existing tablename>;
+
+To copy only table structure from an existing one :
+
+	create table <new tablename> as select columnlist from <existing tablename> where 1=2;
+											  2=3;
+											  3=4;
+											  ..
+	Here 1=2,2=3,3=4,... conditions never satisfy
+
+	insert into <tablename>(select columnlist from <existing tablename>);
+
+ALIASNAME - alternate name for an existing column in a table,aliasname hides actual name of the column in a table
+
+select columnname <aliasname> from <existing tablename>;
+
+DISTINCT clause - to display distinct values
+
+select distinct columnname from <existing tablename>;
+
+OPERATORS in SQL :
+
+Concatenation operator   ||
+
+which helps to merge more than one string into a single expression
+
+Arithmetic operators	+  -  *  /
+
+Relational operators	<  >  <=  >= =  <>
+
+Logical operators	and		or		not
+
+			T T T		T F T		T F
+
+			T F F		F T T		F T
+
+			F T F		F F F 
+
+			F F F		T T T
+
+Comparison operators :-
+
+in - searching for specific value in the given list
+
+between..and - for range of values
+
+like - for pattern matching
+
+...............................................................................................
+
+Functions in SQL :
+
+In SQL , we have two types of functions :
+
+Single-row functions :-
+
+	Character Functions
+
+	initcap(),lower(),upper(),length(),substr(),instr(),translate(),replace(),ltrim(),rtrim(),trim()
+	lpad(),rpad()
+
+	Number Functions
+
+	abs(),ceil(),trunc(),round(),floor(),power(m,n),sqrt(),ln(n),sin(),cos(),tan()
+
+	Date Functions
+
+	sysdate,current_timestamp,add_months(date,n),months_between(date1,date2)
+	next_day(date,'weekday'),last_day(date),greatest(date1,date2),round(date),trunc(date)
+
+	Conversion Functions
+
+	to_char(),to_number(),to_date()
+
+	Miscellaneous Functions
+
+	user,uid,vsize(),nvl()
+
+Group Functions :-
+
+	All group functions operates on set of rows, gives a single result
+
+	min,max,sum,avg(),count(),...
+
+CLAUSES IN SQL :-
+
+	FROM clause
+
+	WHERE Clause - To retrieving / modifying / deleting selected rows
+	
+	GROUP BY clause - To creating subgroups
+
+		select columnlist,group_function(columnname)
+		from tablename
+		group by columnlist;
+
+	HAVING clause - To restricting group results
+
+		select columnlist,group_function(columnname)
+		from tablename
+		group by columnname
+		having group_by_expression;
+
+	ORDER BY clause :- To arrange information either in ascending order / descending order
+
+		select columnlist from tablename order by columnname asc/desc;
+
+		asc - ascending order
+
+		desc - descending order
+
+=========================================================================================
+
+DECODE() represents if-then-else format
+
+
+SQL> select deptno from dept;
+
+    DEPTNO
+----------
+        10
+        20
+        30
+        40
+
+SQL> select deptno,decode(deptno,10,'TEN',20,'TWENTY',30,'THIRTY','UNKNOWN') from dept;
+
+    DEPTNO DECODE(
+---------- -------
+        10 TEN
+        20 TWENTY
+        30 THIRTY
+        40 UNKNOWN
+
+SQL> select distinct job,decode(job,'PRESIDENT','A','ANALYST','B','MANAGER','C','CLERK','D','O') from emp;
+
+JOB       D
+--------- -
+PRESIDENT A
+SALESMAN  O
+CLERK     D
+ANALYST   B
+MANAGER   C
+
+SQL> select distinct job,decode(job,'PRESIDENT','A','ANALYST','B','MANAGER','C','CLERK','D','O') from emp
+  2  order by decode(job,'PRESIDENT','A','ANALYST','B','MANAGER','C','CLERK','D','O);
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> select distinct job,decode(job,'PRESIDENT','A','ANALYST','B','MANAGER','C','CLERK','D','O') from emp
+  2  order by decode(job,'PRESIDENT','A','ANALYST','B','MANAGER','C','CLERK','D','O');
+
+JOB       D
+--------- -
+PRESIDENT A
+ANALYST   B
+MANAGER   C
+CLERK     D
+SALESMAN  O
+
+SQL> select distinct job,decode(job,'PRESIDENT','A','ANALYST','B','MANAGER','C','CLERK','D','O') GRADE
+  2  from emp
+  3  order by GRADE asc;
+
+JOB       G
+--------- -
+PRESIDENT A
+ANALYST   B
+MANAGER   C
+CLERK     D
+SALESMAN  O
+
+SQL> select sal,comm,decode(comm,null,'No Commission',comm) from emp;
+
+       SAL       COMM DECODE(COMM,NULL,'NOCOMMISSION',COMM)
+---------- ---------- ----------------------------------------
+       800            No Commission
+      1600        300 300
+      1250        500 500
+      2975            No Commission
+      1250       1400 1400
+      2850            No Commission
+      2450            No Commission
+      3000            No Commission
+      5000            No Commission
+      1500          0 0
+      1100            No Commission
+
+       SAL       COMM DECODE(COMM,NULL,'NOCOMMISSION',COMM)
+---------- ---------- ----------------------------------------
+       950            No Commission
+      3000            No Commission
+      1300            No Commission
+
+14 rows selected.
+
+create table class(name varchar(15),sex char(1));
+
+insert into class values('MAHESH','M');
+
+insert into class values('SATISH','M');
+
+insert into class values('JOSH','F');
+
+SQL> select * from class;
+
+NAME            S
+--------------- -
+MAHESH          M
+SATISH          M
+JOSH            F
+
+SQL> select count(decode(sex,'M',' ')) MALE,count(decode(sex,'F',' ')) FEMALE from class;
+
+      MALE     FEMALE
+---------- ----------
+         2          1
+
+SQL> select count(decode(sex,'M','F')) from class;
+
+COUNT(DECODE(SEX,'M','F'))
+--------------------------
+                         2
+
+========================================================================================
+
+CASE ... WHEN :-
+
+
+SQL> select deptno,case deptno
+  2  when 10 then 'TEN'
+  3  when 20 then 'TWENTY'
+  4  when 30 then 'THIRTY'
+  5  else 'UNKNOWN'
+  6  end case
+  7  from dept;
+
+    DEPTNO CASE
+---------- -------
+        10 TEN
+        20 TWENTY
+        30 THIRTY
+        40 UNKNOWN
+
+SQL> select distinct job,case job
+  2  when 'PRESIDENT' then 'A'
+  3  when 'MANAGER' then 'B'
+  4  when 'ANALYST' then 'C'
+  5  when 'CLERK' then 'D'
+  6  else 'O'
+  7  end case
+  8  from emp;
+
+JOB       C
+--------- -
+PRESIDENT A
+SALESMAN  O
+CLERK     D
+MANAGER   B
+ANALYST   C
+
+SQL> select sal,case sal
+  2  when 800 then 'Low'
+  3  when 1250 then 'Medium'
+  4  else 'High'
+  5  end case
+  6  from emp;
+
+       SAL CASE
+---------- ------
+       800 Low
+      1600 High
+      1250 Medium
+      2975 High
+      1250 Medium
+      2850 High
+      2450 High
+      3000 High
+      5000 High
+      1500 High
+      1100 High
+
+       SAL CASE
+---------- ------
+       950 High
+      3000 High
+      1300 High
+
+14 rows selected.
+
+===================================================================================
+
+Exercise :-
+
+1.Write a query to display the current date
+
+2.Display the empno,name,salary and salary increased by 15%
+
+3.Display ename,hiredate and salary which is the first MONDAY after six months of service
+
+4.Display ename and calculate the no.of months between today and date the employee was hired
+
+5.Write a query to display the name and salary for all employees.Format the salary to be 15 characters long left padded with $
+
+6.Write a query that will display the ename with the first letter capitalized and all other letters lowercase and the length of their name for all employees whose name starts with J,A,M
+
+7.Display the name,hiredate and day of the week on which the employee started
+
+==============================================================================================
+
+CONSTRAINTS :-
+
+- Set of rules
+
+- To reduce the redundancy (repeated data / duplicate data)
+
+- To prevent invalid data entry into the table
+
+Here we have two types of constraints, they are
+
+Column level constraints and Table level constraints
+
+Column level constraints imposes on a column or a group of columns in a table
+
+Column level constraints are : Domain and Entity integrity constraints
+
+Domain integrity constraints are : not null and check constraint
+
+Entity integrity constraints are : unique and primary key constraint
+
+Table level constraint imposes on two tables to establish parent-child relationship
+
+Table level constraint is Referential integrity constraint i.e foreign key
+
+foreign key maintains relationship with either unique constraint / primary key constraint
+
+NOT NULL :- By default table allows null value, when a not null constraint is enforced on a column or a group of columns then table does not allow null value
+
+null is a system unknown value / unsigned value / unavailability value
+
+zero is not equivalent to null value
+
+create table <tablename>(columndefinition1 constraint <constraintname> <type of constraint>,columndefinition2,..);
+
+Here constraint and constraintname is optional
+
+To enable / disable constraint :
+
+alter table <tablename> enable / disable constraint <constraintname>;
+
+To remove a constraint from an existing table :
+
+alter table <tablename> drop constraint <constraintname>;
+
+Querying on USER_CONSTRAINTS will provide constraint details that the user has created
+
+select * from user_constraints where table_name='TABLENAME';
+
+If we want to write not null constraint for an existing table then we write "alter table"
+
+alter table <tablename> modify(columndefinition1 constraint <constraintname> <type of constraint>,...);
+
+When we drop an entire table then corresponding constraints also be dropped automatically
+
+Eg:-
+
+
+SQL> create table emp_nt(empno int constraint n1 not null,ename varchar(15),job varchar(15),
+  2  sal number(10,2),deptno int);
+
+Table created.
+
+SQL> desc emp_nt
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ EMPNO                                                 NOT NULL NUMBER(38)
+ ENAME                                                          VARCHAR2(15)
+ JOB                                                            VARCHAR2(15)
+ SAL                                                            NUMBER(10,2)
+ DEPTNO                                                         NUMBER(38)
+
+SQL> insert into emp_nt values(null,'aa','bb',1000,10);
+insert into emp_nt values(null,'aa','bb',1000,10)
+                          *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SCOTT"."EMP_NT"."EMPNO")
+
+
+SQL> insert into emp_nt values(100,'aa','bb',1000,10);
+
+1 row created.
+
+SQL> insert into emp_nt values(101,null,'cc',1500,20);
+
+1 row created.
+
+SQL> select * from emp_nt;
+
+     EMPNO ENAME           JOB                    SAL     DEPTNO
+---------- --------------- --------------- ---------- ----------
+       100 aa              bb                    1000         10
+       101                 cc                    1500         20
+
+SQL> select constraint_name,status from user_constraints where table_name='EMP_NT';
+
+CONSTRAINT_NAME                STATUS
+------------------------------ --------
+N1                             ENABLED
+
+SQL> alter table emp_nt disable constraint n1;
+
+Table altered.
+
+SQL> select constraint_name,status from user_constraints where table_name='EMP_NT';
+
+CONSTRAINT_NAME                STATUS
+------------------------------ --------
+N1                             DISABLED
+
+SQL> insert into emp_nt values(null,'bb','cc',2500,30);
+
+1 row created.
+
+SQL> select * from emp_nt;
+
+     EMPNO ENAME           JOB                    SAL     DEPTNO
+---------- --------------- --------------- ---------- ----------
+       100 aa              bb                    1000         10
+       101                 cc                    1500         20
+           bb              cc                    2500         30
+
+SQL> alter table emp_nt enable constraint n1;
+alter table emp_nt enable constraint n1
+                                     *
+ERROR at line 1:
+ORA-02293: cannot validate (SCOTT.N1) - check constraint violated
+
+
+SQL> delete from emp_nt where empno is null;
+
+1 row deleted.
+
+SQL> alter table emp_nt enable constraint n1;
+
+Table altered.
+
+SQL> select constraint_name,status,constraint_type from user_constraints where table_name='EMP_NT';
+
+CONSTRAINT_NAME                STATUS   C
+------------------------------ -------- -
+N1                             ENABLED  C
+
+SQL> alter table emp_nt drop constraint n1;
+
+Table altered.
+
+SQL> select constraint_name,status,constraint_type from user_constraints where table_name='EMP_NT';
+
+no rows selected
+
+SQL> alter table emp_nt modify(empno int not null);
+
+Table altered.
+
+SQL> select constraint_name,status,constraint_type from user_constraints where table_name='EMP_NT';
+
+CONSTRAINT_NAME                STATUS   C
+------------------------------ -------- -
+SYS_C007731                    ENABLED  C
+
+SQL> alter table emp_nt drop constraint SYS_C007731;
+
+Table altered.
+
+SQL> select constraint_name,status,constraint_type from user_constraints where table_name='EMP_NT';
+
+no rows selected
+
+SQL> drop table emp_nt;
+
+Table dropped.
+
+=======================================================================================================
+
+CHECK constraint :-
+
+create table <tablename>(columndefinition1 constraint <constraintname> <type of constraint>(columnname along with the condition),columndefinition2,..);
+
+Here constraint and constraintname is optional
+
+To add a constraint for an existing table :
+
+alter table <tablename> add constraint <constraintname> <type of constraint>(columnname along with the condition);
+
+To enable / disable constraint :
+
+alter table <tablename> enable / disable constraint <constraintname>;
+
+Querying on USER_CONSTRAINTS will provide all constraint details that the user has created
+
+select * from user_constraints where table_name='TABLENAME';
+
+To remove a constraint from an existing table :
+
+alter table <tablename> drop constraint <constraintname>;
+
+When we drop an entire table then corresponding constraints also be dropped automatically
+
+Eg:-
+
+
+SQL> create table emp_chk(empno int not null,ename varchar(15),job varchar(15),
+  2  sal number(10,2) constraint c1 check(sal <1000),deptno int);
+
+Table created.
+
+SQL> insert into emp_chk values(100,'aa','bb',1000,10);
+insert into emp_chk values(100,'aa','bb',1000,10)
+*
+ERROR at line 1:
+ORA-02290: check constraint (SCOTT.C1) violated
+
+
+SQL> insert into emp_chk values(100,'aa','bb',950,10);
+
+1 row created.
+
+SQL> select * from emp_chk;
+
+     EMPNO ENAME           JOB                    SAL     DEPTNO
+---------- --------------- --------------- ---------- ----------
+       100 aa              bb                     950         10
+
+SQL> select constraint_name,search_condition from user_constraints where table_name='EMP_CHK';
+
+CONSTRAINT_NAME
+------------------------------
+SEARCH_CONDITION
+--------------------------------------------------------------------------------
+SYS_C007741
+"EMPNO" IS NOT NULL
+
+C1
+sal <1000
+
+
+SQL> alter table emp_chk drop constraint c1;
+
+Table altered.
+
+SQL> select constraint_name,search_condition from user_constraints where table_name='EMP_CHK';
+
+CONSTRAINT_NAME
+------------------------------
+SEARCH_CONDITION
+--------------------------------------------------------------------------------
+SYS_C007741
+"EMPNO" IS NOT NULL
+
+
+SQL> insert into emp_chk values(101,'bb','cc',1250,20);
+
+1 row created.
+
+SQL> select * from emp_chk;
+
+     EMPNO ENAME           JOB                    SAL     DEPTNO
+---------- --------------- --------------- ---------- ----------
+       100 aa              bb                     950         10
+       101 bb              cc                    1250         20
+
+SQL> alter table emp_chk add constraint c2 check(sal > 1500);
+alter table emp_chk add constraint c2 check(sal > 1500)
+                                   *
+ERROR at line 1:
+ORA-02293: cannot validate (SCOTT.C2) - check constraint violated
+
+
+SQL> delete from emp_chk;
+
+2 rows deleted.
+
+SQL> alter table emp_chk add constraint c2 check(sal > 1500);
+
+Table altered.
+
+SQL> select constraint_name,search_condition from user_constraints where table_name='EMP_CHK';
+
+CONSTRAINT_NAME
+------------------------------
+SEARCH_CONDITION
+--------------------------------------------------------------------------------
+SYS_C007741
+"EMPNO" IS NOT NULL
+
+C2
+sal > 1500
+
+
+SQL> drop table emp_chk;
+
+Table dropped.
+
+=====================================================================================================
+
+ENTITY INTEGRITY CONSTRAINTS :-
+
+UNIQUE
+
+PRIMARY KEY
+
+UNIQUE :- To prevent duplicate data into the table, but it allows null value. When we write unique constraint on more than one column in a table then it said to be a composite unique constraint
+
+create table <tablename>(columndefinition1 constraint <constraintname> <type of constraint>,columndefinition2,..);
+
+Here constraint and constraintname is optional
+
+To add a constraint for an existing table :
+
+alter table <tablename> add constraint <constraintname> <type of constraint>(columnname);
+
+To enable / disable constraint :
+
+alter table <tablename> enable / disable constraint <constraintname>;
+
+To remove a constraint :
+
+alter table <tablename> drop constraint <constraintname>;
+
+Querying on USER_CONSTRAINTS will provide all constraint details that the user has created
+
+select * from user_constraints where table_name='TABLENAME';
+
+When we drop an entire table then corresponding constraints also be dropped automatically
+
+Eg:-
+
+SQL> create table emp_u(empno int constraint u1 unique,ename varchar(15),job varchar(15),
+  2  sal number(10,2),deptno int);
+
+Table created.
+
+SQL> insert into emp_u values(100,'aa','bb',1000,10);
+
+1 row created.
+
+SQL> insert into emp_u values(100,'bb','cc',2000,20);
+insert into emp_u values(100,'bb','cc',2000,20)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SCOTT.U1) violated
+
+SQL> insert into emp_u values(null,'bb','cc',2000,20);
+
+1 row created.
+
+SQL> select * from emp_u;
+
+     EMPNO ENAME           JOB                    SAL     DEPTNO
+---------- --------------- --------------- ---------- ----------
+       100 aa              bb                    1000         10
+           bb              cc                    2000         20
+
+SQL> alter table emp_u add constraint u2 unique(ename);
+
+Table altered.
+
+SQL> select constraint_name,constraint_type from user_constraints where table_name='EMP_U';
+
+CONSTRAINT_NAME                C
+------------------------------ -
+U1                             U
+U2                             U
+
+SQL> alter table emp_u drop constraint u2;
+
+Table altered.
+
+SQL> select constraint_name,constraint_type from user_constraints where table_name='EMP_U';
+
+CONSTRAINT_NAME                C
+------------------------------ -
+U1                             U
+
+SQL> drop table emp_u;
+
+Table dropped.
+
+==================================================================================================
+
+PRIMARY KEY :- To prevent both duplicate data and null values into the table, but a table can have only one PRIMARY KEY
+
+create table <tablename>(columndefinition1 constraint <constraintname> <type of constraint>,columndefinition2,..);
+
+Here constraint and constraintname is optional
+
+To add a constraint for an existing table :
+
+alter table <tablename> add constraint <constraintname> <type of constraint>(columnname);
+
+To enable / disable constraint :
+
+alter table <tablename>enable /disable constraint <constraintname>;
+
+To remove a constraint from an existing table :
+
+alter table <tablename> drop constraint <constraintname>;
+
+Querying on USER_CONSTRAINTS will provide all constraint details that the user has created
+
+select * from user_constraints where table_name='TABLENAME';
+
+When we drop an entire table then corresponding constraints also be dropped automatically
+
+Eg:-
+
+
+SQL> create table emp_p(empno int constraint p1 primary key,ename varchar(20),job varchar(20),
+  2  sal number(10,2),deptno int);
+
+Table created.
+
+SQL> insert into emp_p values(100,'aa','bb',1000,10);
+
+1 row created.
+
+SQL> insert into emp_p values(100,'bb','cc',2000,20);
+insert into emp_p values(100,'bb','cc',2000,20)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SCOTT.P1) violated
+
+
+SQL> insert into emp_p values(null,'bb','cc',2000,20);
+insert into emp_p values(null,'bb','cc',2000,20)
+                         *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SCOTT"."EMP_P"."EMPNO")
+
+
+SQL> alter table emp_p add constraint p2 primary key(ename);
+alter table emp_p add constraint p2 primary key(ename)
+                                    *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
+SQL> select * from emp_p;
+
+     EMPNO ENAME                JOB                         SAL     DEPTNO
+---------- -------------------- -------------------- ---------- ----------
+       100 aa                   bb                         1000         10
+
+SQL> alter table emp_p drop constraint p1;
+
+Table altered.
+
+SQL> drop table emp_p;
+
+Table dropped.
+
+SQL> select constraint_name,constraint_type from user_constraints where table_name='EMP_P';
+
+CONSTRAINT_NAME                C
+------------------------------ -
+SYS_C007748                    C
+SYS_C007749                    C
+SYS_C007750                    C
+SYS_C007751                    C
+SYS_C007752                    P
+SYS_C007753                    U
+
+6 rows selected.
+
+SQL> drop table emp_p;
+
+Table dropped.
+
+===============================================================================================
+
+TABLE LEVEL CONSTRAINTS :-
+
+Table level constraint establishes parent-child relationship
+
+Table level constraint imposes on two tables , that two tables must have a common column and either unique constraint / primary key constraint
+
+Table level constraint is Referential integrity constraint i.e foreign key
+
+foreign key maintains relationship with either unique constraint / primary key constraint
+
+EMP		DEPT
+
+empno(pk)	deptno(pk)
+ename		dname
+job 		loc
+sal
+comm
+deptno
+
+create table <tablename>(columndefinition1 constraint <constraintname> <type of constraint>(columnname) references <tablename>(columnname), columndefinition2,...);
+
+alter table <tablename> add constraint <constraintname> <type of constraint>(columnname) references <tablename>(columnname);
+
+Eg:
+
+
+SQL> create table emp_f(empno int primary key,ename varchar(20),job varchar(15),sal number(10),deptno int);
+
+Table created.
+
+SQL> create table dept_f(deptno int primary key,dname varchar(15),loc varchar(15));
+
+Table created.
+
+SQL> desc emp_f
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ EMPNO                                                 NOT NULL NUMBER(38)
+ ENAME                                                          VARCHAR2(20)
+ JOB                                                            VARCHAR2(15)
+ SAL                                                            NUMBER(10)
+ DEPTNO                                                         NUMBER(38)
+
+SQL> desc dept_f
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ DEPTNO                                                NOT NULL NUMBER(38)
+ DNAME                                                          VARCHAR2(15)
+ LOC                                                            VARCHAR2(15)
+
+SQL> alter table emp_f add constraint fk1 foreign key(deptno) references dept_f(deptno);
+
+Table altered.
+
+- A table having foreign key is called as child table
+
+- A table having referenced key is called as parent table
+
+- Before inserting rows into child table, it checks whether corresponding data is present or not in parent table, if data is present in parent table then only row will be inserted into child table
+
+- If we want to delete rows from parent table , first we should delete from child table
+
+- Without dropping child table we cannot drop parent table
+
+
+SQL> insert into emp_f values(100,'aa','bb',1000,10);
+insert into emp_f values(100,'aa','bb',1000,10)
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (SCOTT.FK1) violated - parent key not found
+
+
+SQL> insert into dept_f values(10,'aa','bb');
+
+1 row created.
+
+SQL> insert into emp_f values(100,'aa','bb',1000,10);
+
+1 row created.
+
+SQL> select * from emp_f;
+
+     EMPNO ENAME                JOB                    SAL     DEPTNO
+---------- -------------------- --------------- ---------- ----------
+       100 aa                   bb                    1000         10
+
+SQL> select * from dept_f;
+
+    DEPTNO DNAME           LOC
+---------- --------------- ---------------
+        10 aa              bb
+
+SQL> delete from dept_f;
+delete from dept_f
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (SCOTT.FK1) violated - child record found
+
+
+SQL> delete from emp_f;
+
+1 row deleted.
+
+SQL> delete from dept_f;
+
+1 row deleted.
+
+SQL> drop table dept_f;
+drop table dept_f
+           *
+ERROR at line 1:
+ORA-02449: unique/primary keys in table referenced by foreign keys
+
+
+SQL> drop table emp_f;
+
+Table dropped.
+
+SQL> drop table dept_f;
+
+Table dropped.
+
+=================================================================================================
+
+ON DELETE CASCADE :- using on delete cascade clause we can able to delete rows from parent table directly, so that child records will be deleted automatically
+
+alter table <tablename> add constraint <constraintname> <type of constraint>(columnname) references <tablename>(columnname) on delete cascade;
+
+Eg:-
+
+
+SQL> create table emp_f(empno int primary key,ename varchar(15),job varchar(15),sal number(10,2),deptno int);
+
+Table created.
+
+SQL> create table dept_f(deptno int primary key,dname varchar(20),loc varchar(15));
+
+Table created.
+
+SQL> alter table emp_f add constraint fk1 foreign key(deptno) references dept_f(deptno) on delete cascade;
+
+Table altered.
+
+SQL> insert into dept_f values(10,'aa','bb');
+
+1 row created.
+
+SQL> insert into emp_f values(100,'aa','bb',1000,10);
+
+1 row created.
+
+SQL> select * from emp_f;
+
+     EMPNO ENAME           JOB                    SAL     DEPTNO
+---------- --------------- --------------- ---------- ----------
+       100 aa              bb                    1000         10
+
+SQL> select * from dept_f;
+
+    DEPTNO DNAME                LOC
+---------- -------------------- ---------------
+        10 aa                   bb
+
+SQL> delete from dept_f;
+
+1 row deleted.
+
+SQL> select * from emp_f;
+
+no rows selected
+
+SQL> drop table emp_f;
+
+Table dropped.
+
+SQL> drop table dept_f;
+
+Table dropped.
+
+==========================================================================================
+
+Questionaries :-
+
+1.Which operator is faster "in" or "exists" operator
+
+2.What is the order of precedence of Clauses
+
+3.What is the use of DEFAULT keyword
+
+4.Is it possible to write DEFAULT keyword in ALTER TABLE statement
+
+5.What is meant by redundancy
+
+6.What is the use of constraints
+
+7.Howmany types of constraints
+
+8.What is the difference between UNIQUE and PRIMARY KEY constraint
+
+9.What is meant by composite constraint
+
+10.What is a foreign key
+
+11.What is the use of ON DELETE CASCADE clause
+
+==============================================================================================
+
+SQL-QUERIES
+1.Display all the information of the EMP table?
+
+A) select * from emp;
+2.Display unique Jobs from EMP table?
+
+A)select distinct job from emp;
+
+B)select unique job from emp;
+
+3.List the emps in the asc order of their Salaries?
+
+A) select * from emp order by sal asc;
+
+4.List the details of the emps in asc order of the Dptnos and desc of Jobs?
+
+A)select * from emp order by deptno asc,job desc;
+
+5.Display all the unique job groups in the descending order?
+
+A)select distinct job from emp order by job desc;
+
+6.Display all the details of all 'Mgrs'
+
+A)Select * from emp where empno in ( select mgr from emp) ;
+
+7.List the emps who joined before 1981.
+
+A) select * from emp where hiredate < ('01-jan-81');
+
+8.List the Empno, Ename, Sal, Daily sal of all emps in the asc order of Annsal.
+
+A) select empno ,ename ,sal,sal/30,12*sal annsal from emp order by annsal asc;
+
+9.Display the Empno, Ename, job, Hiredate, Exp of all Mgrs
+
+A) select empno,ename ,job,hiredate, months_between(sysdate,hiredate) exp from emp where empno in (select mgr from emp);
+
+10.List the Empno, Ename, Sal, Exp of all emps working for Mgr 7369.
+
+A) select empno,ename,sal,exp from emp where mgr = 7369;
+
+11.Display all the details of the emps whose Comm. Is more than their Sal.
+
+A) select * from emp where comm. > sal;
+
+12.List the emps in the asc order of Designations of those joined after the second half of 1981.
+
+A) select * from emp where hiredate > ('30-jun-81') and to_char(hiredate,'YYYY') = 1981 order by job asc;
+
+13.List the emps along with their Exp and Daily Sal is more than Rs.100.
+
+A) select * from emp where (sal/30) >100;
+
+14.List the emps who are either 'CLERK' or 'ANALYST' in the Desc order.
+
+A) select * from emp where job = 'CLERK' or job = 'ANALYST' order by job desc;
+
+15.List the emps who joined on 1-MAY-81,3-DEC-81,17-DEC-81,19-JAN-80 in asc order of seniority.
+
+A) select * from emp where hiredate in ('01-may-81','03-dec-81','17-dec-81','19-jan-80') order by hiredate asc;
+
+16.List the emp who are working for the Deptno 10 or20.
+
+A) select * from emp where deptno = 10 or deptno = 20 ;
+
+17.List the emps who are joined in the year 81.
+
+A) select * from emp where hiredate between '01-jan-81' and '31-dec-81';
+
+18.List the emps who are joined in the month of Aug 1980.
+
+A)select * from emp where hiredate between '01-aug-80' and '31-aug-80'; (OR)
+
+select * from emp where to_char(hiredate,'mon-yyyy') ='aug-1980;
+
+19.List the emps Who Annual sal ranging from 22000 and 45000.
+
+A) select * from emp where 12*sal between 22000 and 45000;
+
+20.List the Enames those are having five characters in their Names.
+
+A) select ename from emp where length (ename) = 5;
+
+21.List the Enames those are starting with 'S' and with five characters.
+
+A) select ename from emp where ename like 'S%' and length (ename) = 5;
+
+22.List the emps those are having four chars and third character must be 'r'.
+
+A) select * from emp where length(ename) = 4 and ename like '__R%';
+
+23.List the Five character names starting with 'S' and ending with 'H'.
+
+A) select * from emp where length(ename) = 5 and ename like 'S%H';
+
+24.List the emps who joined in January.
+
+A) select * from emp where to_char (hiredate,'mon') = 'jan';
+
+25.List the emps who joined in the month of which second character is 'a'.
+
+A)select * from emp where to_char(hiredate,'mon') like '_a_'; (OR)
+
+B) select * from emp where to_char(hiredate,'mon') like '_a%';
+
+26.List the emps whose Sal is four digit number ending with Zero.
+
+A) select * from emp where length (sal) = 4 and sal like '%0';
+
+27.List the emps whose names having a character set 'll' together.
+
+A) select * from emp where ename like '%LL%';
+
+28.List the emps those who joined in 80's.
+
+A) select * from emp where to_char(hiredate,'yy') like '8%';
+
+29.List the emps who does not belong to Deptno 20.
+
+A) select * from emp where deptno not in (20); (OR)
+
+B) select * from emp where deptno != 20; (OR)
+
+C) select * from emp where deptno <>20; (OR)
+
+D) select * from emp where deptno not like '20';
+
+30.List all the emps except 'PRESIDENT' & 'MGR” in asc order of Salaries.
+
+A)Select * from emp where job not in ('PRESIDENT','MANAGER') order by sal asc;
+
+B)select * from emp where job not like 'PRESIDENT' and job not like 'MANAGER' order by sal asc;
+
+C) Select * from emp where job != 'PRESIDENT' and job <> 'MANAGER' order by sal asc;
+
+31.List all the emps who joined before or after 1981.
+
+A)select * from emp where to_char (hiredate,'YYYY') not in ('1981'); (OR)
+
+B)select * from emp where to_char ( hiredate,'YYYY') != '1981'; (OR)
+
+C)select * from emp where to_char(hiredate,'YYYY') <> '1981' ; (OR)
+
+D) select * from emp where to_char (hiredate ,'YYYY') not like '1981';
+
+32.List the emps whose Empno not starting with digit78.
+
+A) select * from emp where empno not like '78%';
+
+33.List the emps who are working under 'MGR'.
+
+A) select e.ename || ' works for ' || m.ename from emp e ,emp m where e.mgr = m.empno ; (OR)
+
+B) select e.ename || ' has an employee '|| m.ename from emp e , emp m where e.empno = m.mgr;
+
+34.List the emps who joined in any year but not belongs to the month of March.
+
+A)select * from emp where to_char (hiredate,'MON') not in ('MAR'); (OR)
+
+B)select * from emp where to_char (hiredate,'MON') != 'MAR'; (OR)
+
+C)select * from emp where to_char(hiredate,'MONTH') not like 'MAR%' ; (OR)
+
+D)select * from emp where to_char(hiredate,'MON') <> 'MAR';
+
+35.List all the Clerks of Deptno 20.
+
+A)select * from emp where job ='CLERK' and deptno = 20;
+
+36.List the emps of Deptno 30 or 10 joined in the year 1981.
+
+A) select * from emp where to_char(hiredate,'YYYY') = '1981' and (deptno =30 or deptno =10) ; (OR) select * from emp where to_char (hiredate,'YYYY') in ('1981') and (deptno = 30 or deptno =10 ) ;
+
+=======================================================================================================
+
+JOINS :-
+
+SQL> select * from emp;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+SQL> select * from dept;
+
+    DEPTNO DNAME          LOC
+---------- -------------- -------------
+        10 ACCOUNTING     NEW YORK
+        20 RESEARCH       DALLAS
+        30 SALES          CHICAGO
+        40 OPERATIONS     BOSTON
+
+When we required information from more than one table in the database then we use joins
+
+Purpose joins is to retrieving data spread across the tables
+
+select * from emp,dept;
+
+- When all rows of table1 is joined to all rows of table2
+
+- When join condition is omitted / invalid
+
+then cartesian product will be formed
+
+To avoid cartesian product we must include valid join condition in "where" clause
+
+Actually joins performed by "where" clause itself
+
+select columnlist
+from table1,table2,..
+where table1.columnname = table2.columnname;
+
+To join n number of tables together we must include atleast n-1 join conditions
+
+select columnlist
+from table1,table2,table3,..
+where table1.columnname = table2.columnname and table2.columnname = table3.columnname;
+
+Types of joins :-
+
+Simple join
+	Equi join
+	Non-equi join
+
+Self join
+
+Outer join
+
+	Left outer join
+	Right outer join
+	Full outer join
+

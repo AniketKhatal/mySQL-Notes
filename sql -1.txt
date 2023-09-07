@@ -1,0 +1,1064 @@
+Front-end Tool 
+
+Any GUI (Graphical User Interface)
+
+Any application program (C,C++,Java,.Net,VB,...)
+
+Back-end Tool
+
+Any Database
+
+Purpose of database is storage and retrieving
+
+Data - Collection of information
+
+x
+
+Database - Processing of data / The collection of interrelated data and a set of programs to access the data, this collection of data is called as database
+
+DBMS (Database Management System)
+
+- To maintain small scale data
+
+- To do some calculations
+
+- To analysing the data
+
+- DBMS packages are : Excel,Access,Dbase,..
+
+- In any DBMS package, data will be stored in terms of files only
+
+RDBMS (Relational Database Management System)
+
+- To maintain medium to large scale data
+
+- Organizing the data
+
+- Supports one-to-one,one-to-many,many-to-many relationships
+
+Server
+	Client1
+	Client2
+	Client3
+	Client4
+	Client5
+	..
+	..
+	..
+
+- RDBMS packages are : Oracle,SQLServer,MySQL,DB2,..
+
+- In any RDBMS package, data will be stored in terms of tables only which having collection of rows and columns
+
+Collection of rows is called as TUPLES
+
+Dr.E.F.Codd introduced 12 rules like information rule,data sublanguage rule,insert and update rule, strategic null value rule,integration rule,partition rule,...
+
+Oracle is one of RDBMS
+
+Oracle is a platform independent database programming language
+
+Oracle having two sub languages , they are
+
+SQL (Structured Query Language)
+
+PL/SQL (Procedural language for SQL)
+
+SQL is a common database programming language used by every RDBMS (Oracle,SQLServer,MySQL,DB2,..)
+
+SQL stands for Structured Query Language
+
+Purpose of SQL is to communicating with the database / Querying the database
+
+SQL commands :
+
+DDL (Data Definition Language)
+
+create	- to define database object structure
+
+alter	- to modify an existing table structure
+
+truncate- to remove all rows from an existing table, table structure will remain
+
+drop	- to remove an entire table
+
+Database Objects :-
+
+Tables
+Synonyms
+View
+Indexes
+Procedures
+Functions
+Triggers
+
+DML (Data Manipulation Language)
+
+insert	- inserting rows into an existing table
+
+update	- modifying rows in an existing table
+
+delete	- deleting rows from an existing table
+
+DRL / DQL (Data Retrieval language / Data Querying language)
+
+SELECT	- To retrieving data from an existing table
+
+DCL (Data Control Language)
+
+grant	- granting all permissions on object to others
+
+revoke	- revertting all permissions on object from others
+
+TCL (Transaction Control Language)
+
+commit	- to save transaction
+
+rollback - to undo the transaction
+
+.....................................................................................
+
+DDL  (Data Definition Language)
+
+create	- To define database object structure
+
+create table <tablename>(columndefinition1,columndefinition2,...);
+
+columndefinition means columnname datatype
+
+- Tablename / Columnname must be begin with a letter
+
+- Spaces does not allowed
+
+- Undescores can be allowed
+
+Datatypes :-
+
+int
+number
+
+numeric (For SQLServer)
+
+	To insert numeric information into the database
+
+Eg:-
+
+sno int;
+
+sno number(10);
+
+sal number(6,2);
+
+4000.00
+
+sal number(6,3);
+
+400.000
+
+sal number(7,2);
+
+40000.00
+
+VARCHAR	- To insert characterised information / alpha-numeric characters into the database
+
+Range is 4000 bytes
+
+varchar is a variable length string datatype
+
+Eg:-
+
+sname varchar(20);
+
+CHAR	- To insert fixed length string data into the database
+
+Range is 2000 bytes
+
+char is a fixed length string datatype
+
+Eg:-
+
+sex char(1);
+
+'m','f','V123','abc',...
+
+DATE	- To insert date values into the database
+
+Default date format in Oracle is DD-MON-YY
+
+Default size of date datatype in Oracle is 7 bytes
+
+Eg:
+
+hiredate date;
+
+'10-DEC-11'
+
+Default date format in SQLServer is YYYY/MM/DD
+
+Default size of date datatype in SQLServer is 8 bytes
+
+Eg:
+
+hiredate date;
+
+'2013/01/01'
+
+Default date format in MySQL is YYYY-MM-DD
+
+Default size of date datatype in MySQL is 8 bytes
+
+LOBs (Large Objects)
+
+	CLOB
+	BLOB
+	NLOB	
+
+RAW
+long RAW	- To insert binary information
+
+BFILE (binary FILE) - To insert information of an existing file into current database
+
+-------------------------------------------------------------------------------------------
+
+
+SQL> create table student_details(sno int,sname varchar(15),course varchar(15));
+
+Table created.
+
+SQL> desc student_details
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ SNO                                                            NUMBER(38)
+ SNAME                                                          VARCHAR2(15)
+ COURSE                                                         VARCHAR2(15)
+
+
+---------------------------------------------------------------
+
+create table employee_details(empno int,emp_name varchar(20),hiredate date,job varchar(15),
+sal number(10,2),sex char(1),deptno int);
+
+create table vendor_master(vencode varchar(5),venname varchar(15),venaddress varchar(20),venmobile number(10), ventype varchar(15));
+
+create table order_master(orderno varchar(5),odate date,del_date date,o_status char(1),vencode varchar(5));
+
+create table order_detail(orderno varchar(5),qty_ord int,qty_deld int,itemcode varchar(5));
+
+Tablename : ITEMFILE
+
+itemcode
+itemdesc
+product_category
+qty_hand
+max_level
+re_level
+itemrate
+
+create table itemfile(itemcode varchar(5),itemdesc varchar(15),product_category varchar(20),
+qty_hand int,max_level int,re_level int,itemrate number(10,2));
+
+Tablename : Accounts
+
+Accno
+Acc_holdername
+Address
+Mobile
+DOB
+Acc_OpenDate
+Acc_type
+Min_Balance
+
+Tablename : Customers
+
+Custid
+Custname
+Custaddress
+Custmobile
+Custtype
+Work_category
+odate
+del_date
+Est_cost
+Adv_Pay
+Balance
+
+Tablename : Products
+
+Prodid
+Prodname
+Prod_category
+Mfg_Date
+Exp_Date
+Prodcost
+
+Tablename : Doctors
+
+Doctid
+Doctname
+Hospitalname
+Address
+Mobile
+Specialization
+Consultation_fee
+
+----------------------------------------------------------------------
+
+ALTER	- To modify an existing tablestructure
+
+To add a column for an existing table :
+
+alter table <tablename> add (columndefintion1,columndefinition2,...);
+
+Eg:-
+
+
+SQL> desc student_details
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ SNO                                                            NUMBER(38)
+ SNAME                                                          VARCHAR2(15)
+ COURSE                                                         VARCHAR2(15)
+
+SQL> alter table student_details add(tel_no int,address varchar(20),mobile number(10));
+
+Table altered.
+
+SQL> desc student_details
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ SNO                                                            NUMBER(38)
+ SNAME                                                          VARCHAR2(15)
+ COURSE                                                         VARCHAR2(15)
+ TEL_NO                                                         NUMBER(38)
+ ADDRESS                                                        VARCHAR2(20)
+ MOBILE                                                         NUMBER(10)
+
+=====================================================================================
+
+To remove a column from an existing table :
+
+alter table <tablename> drop column <columnname>;
+
+Eg:-
+
+
+SQL> alter table student_details drop column tel_no;
+
+Table altered.
+
+SQL> desc student_details
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ SNO                                                            NUMBER(38)
+ SNAME                                                          VARCHAR2(15)
+ COURSE                                                         VARCHAR2(15)
+ ADDRESS                                                        VARCHAR2(20)
+ MOBILE                                                         NUMBER(10)
+
+=========================================================================================
+
+To modify datatype / datatype length :
+
+alter table <tablename> modify(columndefinition1,columndefinition2,..);
+
+Eg:-
+
+
+SQL> alter table student_details modify(sname varchar(10),address varchar(30));
+
+Table altered.
+
+SQL> desc student_details
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ SNO                                                            NUMBER(38)
+ SNAME                                                          VARCHAR2(10)
+ COURSE                                                         VARCHAR2(15)
+ ADDRESS                                                        VARCHAR2(30)
+ MOBILE                                                         NUMBER(10)
+
+============================================================================================
+
+To renaming a column :
+
+alter table <tablename> rename column <columnname> to <new columnname>;
+
+Eg:-
+
+
+SQL> alter table student_details rename column mobile to mobile_number;
+
+Table altered.
+
+SQL> desc student_details
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ SNO                                                            NUMBER(38)
+ SNAME                                                          VARCHAR2(10)
+ COURSE                                                         VARCHAR2(15)
+ ADDRESS                                                        VARCHAR2(30)
+ MOBILE_NUMBER                                                  NUMBER(10)
+
+=============================================================================================
+
+To renaming a table :
+
+alter table <tablename> rename to <new tablename>;
+
+Eg:-
+
+
+SQL> alter table student_details rename to student;
+
+Table altered.
+
+SQL> desc student_details
+ERROR:
+ORA-04043: object student_details does not exist
+
+
+SQL> desc student
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ SNO                                                            NUMBER(38)
+ SNAME                                                          VARCHAR2(10)
+ COURSE                                                         VARCHAR2(15)
+ ADDRESS                                                        VARCHAR2(30)
+ MOBILE_NUMBER                                                  NUMBER(10)
+
+----------------------------------------------------------------------------------------------------
+
+TRUNCATE - To remove all rows from an existing table
+
+truncate table <existing tablename>;
+
+Eg:-
+
+
+SQL> truncate table student;
+
+Table truncated.
+
+SQL> desc student;
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ SNO                                                            NUMBER(38)
+ SNAME                                                          VARCHAR2(10)
+ COURSE                                                         VARCHAR2(15)
+ ADDRESS                                                        VARCHAR2(30)
+ MOBILE_NUMBER                                                  NUMBER(10)
+
+SQL> select * from class;
+
+NAME            S
+--------------- -
+MAHESH          M
+SATISH          M
+JOSH            F
+
+SQL> truncate table class;
+
+Table truncated.
+
+SQL> select * from class;
+
+no rows selected
+
+SQL> desc class
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ NAME                                                           VARCHAR2(15)
+ SEX                                                            CHAR(1)
+
+...................................................................................................
+
+DROP	- To remove an entire table
+
+drop table <existing tablename>;
+
+Eg:-
+
+
+SQL> drop table student;
+
+Table dropped.
+
+SQL> drop table class;
+
+Table dropped.
+
+SQL> desc student;
+ERROR:
+ORA-04043: object student does not exist
+
+.................................................................................................
+
+All DDL commands are automatically commited
+
+===================================================================================================
+
+
+SQL> create table products(prodid varchar(15),prodname varchar(20),prod_category varchar(20));
+
+Table created.
+
+SQL> desc products
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ PRODID                                                         VARCHAR2(15)
+ PRODNAME                                                       VARCHAR2(20)
+ PROD_CATEGORY                                                  VARCHAR2(20)
+
+SQL> alter table products add(Mfg_date date,Exp_Date date,Prodcost int,Vencode varchar(5),
+Venaddress varchar(20));
+
+Table altered.
+
+SQL> desc products
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ PRODID                                                         VARCHAR2(15)
+ PRODNAME                                                       VARCHAR2(20)
+ PROD_CATEGORY                                                  VARCHAR2(20)
+ MFG_DATE                                                       DATE
+ EXP_DATE                                                       DATE
+ PRODCOST                                                       NUMBER(38)
+ VENCODE                                                        VARCHAR2(5)
+ VENADDRESS                                                     VARCHAR2(20)
+
+SQL> alter table products drop column venaddress;
+
+Table altered.
+
+SQL> alter table products modify(prodname varchar(15),prod_category varchar(30));
+
+Table altered.
+
+SQL> alter table products rename column prodname to product_name;
+
+Table altered.
+
+SQL> desc products
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ PRODID                                                         VARCHAR2(15)
+ PRODUCT_NAME                                                   VARCHAR2(15)
+ PROD_CATEGORY                                                  VARCHAR2(30)
+ MFG_DATE                                                       DATE
+ EXP_DATE                                                       DATE
+ PRODCOST                                                       NUMBER(38)
+ VENCODE                                                        VARCHAR2(5)
+
+SQL> alter table products rename to product_details;
+
+Table altered.
+
+SQL> desc products
+ERROR:
+ORA-04043: object products does not exist
+
+
+SQL> desc product_details
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ PRODID                                                         VARCHAR2(15)
+ PRODUCT_NAME                                                   VARCHAR2(15)
+ PROD_CATEGORY                                                  VARCHAR2(30)
+ MFG_DATE                                                       DATE
+ EXP_DATE                                                       DATE
+ PRODCOST                                                       NUMBER(38)
+ VENCODE                                                        VARCHAR2(5)
+
+SQL> truncate table product_details;
+
+Table truncated.
+
+SQL> drop table product_details;
+
+Table dropped.
+
+SQL> desc product_details
+ERROR:
+ORA-04043: object product_details does not exist
+
+
+=============================================================================================
+
+
+DML (Data Manipulation Language)
+
+insert	- inserting rows into an existing table
+
+update	- modifying rows in an existing table
+
+delete	- deleting rows from an existing table
+
+insert :-
+
+insert into <tablename> values(values of the columns..);
+
+Eg:
+
+
+SQL> create table employees(empno int,ename varchar(15),job varchar(15),hiredate date,sal number(10,2),
+deptno int);
+
+Table created.
+
+SQL> desc employees;
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ EMPNO                                                          NUMBER(38)
+ ENAME                                                          VARCHAR2(15)
+ JOB                                                            VARCHAR2(15)
+ HIREDATE                                                       DATE
+ SAL                                                            NUMBER(10,2)
+ DEPTNO                                                         NUMBER(38)
+
+SQL> insert into employees values(100,'Kumar','Consultant','10-DEC-13',1000,10);
+
+1 row created.
+
+SQL> insert into employees values(101,'satish','Sr.Consultant','02-FEB-13',2000,20);
+
+1 row created.
+
+=================================================================================================
+
+If we want to inserting rows for selected columns in an existing table then we specify columnlist before keyword "values"
+
+insert into <tablename>(columnlist) values(values of the columns...);
+
+Eg:-
+
+
+SQL> insert into employees(empno,job,deptno) values(102,'Developer',20);
+
+1 row created.
+
+SQL> insert into employees(ename,hiredate,sal) values('Visu','10-SEP-17',1950);
+
+1 row created.
+
+SQL> insert into employees(empno,deptno) values(103,30);
+
+1 row created.
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           Consultant      10-DEC-13       1000         10
+       101 satish          Sr.Consultant   02-FEB-13       2000         20
+       102                 Developer                                    20
+           Visu                            10-SEP-17       1950
+       103                                                              30
+
+When we inserted rows for selected columns in an existing table then rest of columns will be taking null values automatically
+
+null is a system unknown value / unsigned value / unavailability value
+
+0 is not equivalent to null value
+
+If we want to insert NULL value explicitly then we write :
+
+insert into employees values(null,'madan',null,'02-MAR-15',null,40);
+
+--------------------------------------------------------------------------------------------------
+
+If we want to inserting rows randomly then :
+
+SQL> insert into employees values(&empno,'&ename','&job','&hiredate',&sal,&deptno);
+Enter value for empno: 105
+Enter value for ename: NAG
+Enter value for job: MANAGER
+Enter value for hiredate: 20-APR-14
+Enter value for sal: 150000
+Enter value for deptno: 50
+old   1: insert into employees values(&empno,'&ename','&job','&hiredate',&sal,&deptno)
+new   1: insert into employees values(105,'NAG','MANAGER','20-APR-14',150000,50)
+
+1 row created.
+
+SQL> /
+Enter value for empno: 106
+Enter value for ename: UMA
+Enter value for job: EXECUTIVE
+Enter value for hiredate: 20-MAY-16
+Enter value for sal: 1250
+Enter value for deptno: 60
+old   1: insert into employees values(&empno,'&ename','&job','&hiredate',&sal,&deptno)
+new   1: insert into employees values(106,'UMA','EXECUTIVE','20-MAY-16',1250,60)
+
+1 row created.
+
+=============================================================================================
+
+UPDATE	- To modify rows in an existing table
+
+update <tablename> set columnname = value;
+
+Eg:-
+
+update employees set empno=100;
+
+The above query modifying all rows in an existing table
+
+To modify selected rows in an existing table then we write "where" clause
+
+update <tablename> set columnname = value where <condition>;
+
+Eg:-
+
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           Consultant      10-DEC-13       1000         10
+       101 satish          Sr.Consultant   02-FEB-13       2000         20
+       102                 Developer                                    20
+           Visu                            10-SEP-17       1950
+       103                                                              30
+           madan                           02-MAR-15                    40
+       105 NAG             MANAGER         20-APR-14     150000         50
+       106 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+8 rows selected.
+
+SQL> update employees set empno=100;
+
+8 rows updated.
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           Consultant      10-DEC-13       1000         10
+       100 satish          Sr.Consultant   02-FEB-13       2000         20
+       100                 Developer                                    20
+       100 Visu                            10-SEP-17       1950
+       100                                                              30
+       100 madan                           02-MAR-15                    40
+       100 NAG             MANAGER         20-APR-14     150000         50
+       100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+8 rows selected.
+
+SQL> update employees set empno=101 where ename='satish';
+
+1 row updated.
+
+SQL> update employees set empno=102 where job='Developer';
+
+1 row updated.
+
+SQL> update employees set empno=103,job='CLERK',sal=800 where deptno=30;
+
+1 row updated.
+
+SQL> update employees set ename='RAJA' where job='CLERK';
+
+1 row updated.
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           Consultant      10-DEC-13       1000         10
+       101 satish          Sr.Consultant   02-FEB-13       2000         20
+       102                 Developer                                    20
+       100 Visu                            10-SEP-17       1950
+       103 RAJA            CLERK                            800         30
+       100 madan                           02-MAR-15                    40
+       100 NAG             MANAGER         20-APR-14     150000         50
+       100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+8 rows selected.
+
+SQL> update employees set ename='NAREN' where ename is null;
+
+1 row updated.
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           Consultant      10-DEC-13       1000         10
+       101 satish          Sr.Consultant   02-FEB-13       2000         20
+       102 NAREN           Developer                                    20
+       100 Visu                            10-SEP-17       1950
+       103 RAJA            CLERK                            800         30
+       100 madan                           02-MAR-15                    40
+       100 NAG             MANAGER         20-APR-14     150000         50
+       100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+8 rows selected.
+
+SQL> update employees set job='ANALYST' where rownum=1;
+
+1 row updated.
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           ANALYST         10-DEC-13       1000         10
+       101 satish          Sr.Consultant   02-FEB-13       2000         20
+       102 NAREN           Developer                                    20
+       100 Visu                            10-SEP-17       1950
+       103 RAJA            CLERK                            800         30
+       100 madan                           02-MAR-15                    40
+       100 NAG             MANAGER         20-APR-14     150000         50
+       100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+8 rows selected.
+
+SQL> update employees set sal=3000 where rownum <=3;
+
+3 rows updated.
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           ANALYST         10-DEC-13       3000         10
+       101 satish          Sr.Consultant   02-FEB-13       3000         20
+       102 NAREN           Developer                       3000         20
+       100 Visu                            10-SEP-17       1950
+       103 RAJA            CLERK                            800         30
+       100 madan                           02-MAR-15                    40
+       100 NAG             MANAGER         20-APR-14     150000         50
+       100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+8 rows selected.
+
+SQL> select rownum,empno,ename,job,hiredate,sal,deptno from employees;
+
+    ROWNUM      EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- ---------- --------------- --------------- --------- ---------- ----------
+         1        100 Kumar           ANALYST         10-DEC-13       3000         10
+         2        101 satish          Sr.Consultant   02-FEB-13       3000         20
+         3        102 NAREN           Developer                       3000         20
+         4        100 Visu                            10-SEP-17       1950
+         5        103 RAJA            CLERK                            800         30
+         6        100 madan                           02-MAR-15                    40
+         7        100 NAG             MANAGER         20-APR-14     150000         50
+         8        100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+8 rows selected.
+
+=========================================================================================
+
+Here ROWNUM is a psuedo column, psuedo column behaves like a table column , but it is not stored in the table
+
+==============================================================================================
+
+DELETE	- To delete rows from an existing table
+
+delete from <existing tablename>;
+
+Eg:-
+
+delete from employees;
+
+The above query deleting all rows from an existing table
+
+To delete selected rows from an existing table then we write "where" clause
+
+delete from <existing tablename> where <condition>;
+
+Eg:-
+
+
+SQL> delete from employees where empno=101;
+
+1 row deleted.
+
+SQL> delete from employees where job='CLERK';
+
+1 row deleted.
+
+SQL> delete from employees where deptno is null;
+
+1 row deleted.
+
+
+SQL> select * from emp1;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20
+
+11 rows selected.
+
+SQL> delete from emp1 where rownum=1;
+
+1 row deleted.
+
+SQL> delete from emp1 where rownum <=3;
+
+3 rows deleted.
+
+SQL> select * from emp1;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20
+
+7 rows selected.
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           ANALYST         10-DEC-13       3000         10
+       102 NAREN           Developer                       3000         20
+       100 madan                           02-MAR-15                    40
+       100 NAG             MANAGER         20-APR-14     150000         50
+       100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+SQL> insert into employees values(100,'UMA','EXECUTIVE','20-MAY-16',1250,60);
+
+1 row created.
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           ANALYST         10-DEC-13       3000         10
+       102 NAREN           Developer                       3000         20
+       100 madan                           02-MAR-15                    40
+       100 NAG             MANAGER         20-APR-14     150000         50
+       100 UMA             EXECUTIVE       20-MAY-16       1250         60
+       100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+6 rows selected.
+
+SQL> select rowid,empno,ename,job,hiredate,sal,deptno from employees;
+
+ROWID                   EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+------------------ ---------- --------------- --------------- --------- ---------- ----------
+AAAFz8AAEAAAAX2AAA        100 Kumar           ANALYST         10-DEC-13       3000         10
+AAAFz8AAEAAAAX2AAC        102 NAREN           Developer                       3000         20
+AAAFz8AAEAAAAX2AAF        100 madan                           02-MAR-15                    40
+AAAFz8AAEAAAAX2AAG        100 NAG             MANAGER         20-APR-14     150000         50
+AAAFz8AAEAAAAX2AAH        100 UMA             EXECUTIVE       20-MAY-16       1250         60
+AAAFz8AAEAAAAX2AAI        100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+6 rows selected.
+
+SQL> delete from employees where rowid='AAAFz8AAEAAAAX2AAI';
+
+1 row deleted.
+
+SQL> select * from employees;
+
+     EMPNO ENAME           JOB             HIREDATE         SAL     DEPTNO
+---------- --------------- --------------- --------- ---------- ----------
+       100 Kumar           ANALYST         10-DEC-13       3000         10
+       102 NAREN           Developer                       3000         20
+       100 madan                           02-MAR-15                    40
+       100 NAG             MANAGER         20-APR-14     150000         50
+       100 UMA             EXECUTIVE       20-MAY-16       1250         60
+
+Here ROWNUM,ROWID are psuedo column, psuedo column behaves like a table column , but it is not stored in the table
+
+ROWID helps to identify duplicate records
+
+=============================================================================================
+
+TRUNCATE						DELETE
+
+DDL command						DML command
+
+All Rows are deleted					All Rows are deleted
+
+Auto commited						Explicilty commited
+
+Rows cannot be rollback					Rows can be rollback before commit
+
+Can't have where clause to delete selected rows		Can have where clause to delete selected rows
+
+Eg:							Eg:
+
+truncate table T1;					delete from T1;
+
+							delete from T1 where sno=10;
+
+================================================================================================
+
+DEFAULT keyword :- To assign some value to the column
+
+SQL> create table T1(sno int default 10,sname varchar(15));
+
+Table created.
+
+SQL> insert into T1(sname) values('AA');
+
+1 row created.
+
+SQL> select * from T1;
+
+       SNO SNAME
+---------- ---------------
+        10 AA
+
+SQL> insert into T1 values(11,'BB');
+
+1 row created.
+
+SQL> insert into T1(sname) values('CC');
+
+1 row created.
+
+SQL> insert into T1 values(12,'DD');
+
+1 row created.
+
+SQL> insert into T1(sname) values('EE');
+
+1 row created.
+
+SQL> select * from T1;
+
+       SNO SNAME
+---------- ---------------
+        10 AA
+        11 BB
+        10 CC
+        12 DD
+        10 EE
+
+============================================================================================
+
+Questions :-
+
+1.What is the difference between VARCHAR and CHAR
+
+2.What is the difference between VARCHAR and VARCHAR2
+
+3.What is meant by psuedo column
+
+4.What is the difference between ROWNUM and ROWID
+
+5.What are differences between TRUNCATE,DELETE,DROP
+
+=============================================================================================
+

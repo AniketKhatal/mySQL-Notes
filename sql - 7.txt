@@ -1,0 +1,1088 @@
+Iterations (Conditional looping)
+
+Simple loop
+
+While loop
+
+For loop
+
+Simple loop :-
+
+loop
+
+	Statements
+
+end loop;
+
+Eg:
+
+
+SQL> set serveroutput on
+SQL> declare
+  2  a number:=1;
+  3  begin
+  4  loop
+  5  a:=a+1;
+  6  exit when a=10;
+  7  end loop;
+  8  dbms_output.put_line(to_char(a));
+  9  end;
+ 10  /
+10
+
+PL/SQL procedure successfully completed.
+
+SQL> declare
+  2  a number:=1;
+  3  begin
+  4  loop
+  5  dbms_output.put_line('Value of a = '||a);
+  6  a:=a+1;
+  7  exit when a=10;
+  8  end loop;
+  9  end;
+ 10  /
+Value of a = 1
+Value of a = 2
+Value of a = 3
+Value of a = 4
+Value of a = 5
+Value of a = 6
+Value of a = 7
+Value of a = 8
+Value of a = 9
+
+PL/SQL procedure successfully completed.
+
+===========================================================================
+
+EXIT WHEN statement allow us to complete a loop if further processing to undesirable or impossible
+
+==================================================================
+
+WHILE LOOP :-
+
+while condition
+loop
+..
+.
+..
+end loop;
+
+In while loop, first control checks the condition , if condition is true then only statements will be executed , after executing statements again control checks the condition, if condition is true then once again statements will be executed till given condition is false
+
+
+SQL> declare
+  2  a number :=1;
+  3  begin
+  4  while a <=10
+  5  loop
+  6  dbms_output.put_line('Value of a = '||a);
+  7  a:=a+1;
+  8  end loop;
+  9  end;
+ 10  /
+Value of a = 1
+Value of a = 2
+Value of a = 3
+Value of a = 4
+Value of a = 5
+Value of a = 6
+Value of a = 7
+Value of a = 8
+Value of a = 9
+Value of a = 10
+
+PL/SQL procedure successfully completed.
+
+===================================================================================
+
+FOR LOOP :-
+
+for variablename in lowerbound .. upperbound
+loop
+..
+..
+end loop;
+
+Eg:
+
+SQL> begin
+  2  for i in 1..10
+  3  loop
+  4  dbms_output.put_line('Value of i = '||i);
+  5  end loop;
+  6  end;
+  7  /
+Value of i = 1
+Value of i = 2
+Value of i = 3
+Value of i = 4
+Value of i = 5
+Value of i = 6
+Value of i = 7
+Value of i = 8
+Value of i = 9
+Value of i = 10
+
+PL/SQL procedure successfully completed.
+
+begin
+for i in 1..2
+loop
+update order_master set o_status='p' where odate=sysdate;
+end loop;
+end;
+/
+
+
+SQL> select * from emp1;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+14 rows selected.
+
+SQL> begin
+  2  for i in 1..2
+  3  loop
+  4  update emp1 set hiredate=sysdate where deptno=10;
+  5  end loop;
+  6  end;
+  7  /
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from emp1 where deptno=10;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7782 CLARK      MANAGER         7839 03-OCT-21       2450                    10
+      7839 KING       PRESIDENT            03-OCT-21       5000                    10
+      7934 MILLER     CLERK           7782 03-OCT-21       1300                    10
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> select * from emp1 where deptno=10;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+=================================================================================================
+
+goto statement:
+
+declare
+qtyhand itemfile.qty_hand%type;
+relevel itemfile.re_level%type;
+begin
+select qty_hand,re_level into qtyhand,relevel
+from itemfile where itemcode='i001';
+if qtyhand < relevel then
+goto updation;
+end if;
+<<updation>>
+update itemfile set qty_hand=qtyhand + revel where itemcode='i001';
+end;
+/
+
+SQL> declare
+  2  eno emp.empno%type;
+  3  s emp.sal%type;
+  4  c emp.comm%type;
+  5  begin
+  6  eno:=&eno;
+  7  select sal,nvl(comm,0) into s,c from emp1 where empno=eno;
+  8  if s < c then
+  9  goto updation;
+ 10  end if;
+ 11  <<updation>>
+ 12  update emp1 set sal=s+c where empno=eno;
+ 13  end;
+ 14  /
+Enter value for eno: 7654
+old   6: eno:=&eno;
+new   6: eno:=7654;
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from emp1 where empno=7654;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       2650       1400         30
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> select * from emp1 where empno=7654;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+
+==================================================================================
+
+State True or False 
+
+1.Sequence of statements can be executed based on conditions using if statement
+
+2.If then elsif statement can be used when we want to select from several mutually exclusive alternatives
+
+3.Exit when statement allow us to complete a loop if further processing is undesirable or impossible
+
+4.goto statement allow us to branch to a label unconditionally
+
+
+Fill in Blanks 
+
+1.For iteration to proceed downwards from upperbound to lowerbound we can use the optional keyword ________ in a for loop
+
+2.To print the message along with the variable we use a package called ___________
+
+3.To execute sequence of statements multiple times ___________ can be used
+
+4.The three types of loop are simple,while ,_____ loops
+
+===============================================================================================
+
+EXCEPTION HANDLING :-
+
+Exception is nothing but runtime error
+
+Exception occurs during execution of the program
+
+Exception handling block is used to stop the program from abnormal termination
+
+declare
+..
+..
+begin
+..
+..
+..
+	exception
+	when exceptioname then
+	..
+	..
+end;
+/
+
+Here we have two types of exceptions,they are :
+
+Pre-defined exceptions
+
+User-defined exceptions
+
+All pre-defined exceptions taken care of by PL/SQL program implicitly
+
+All user-defined exceptions taken care of by User explicitly
+
+List of pre-defined exceptions :
+
+no_data_found	- when select statement returns zero rows
+
+too_many_rows	- raised when select statement returns more than one row
+
+dup_val_on_index
+
+zero_divide	- raised when divide by zero
+
+cursor_already_open
+
+storage_error  - runs out of memory
+
+program_error
+
+invalid_cursor
+
+invalid_number
+
+
+SQL> declare
+  2  eno emp.empno%type;
+  3  s emp.sal%type;
+  4  c emp.comm%type;
+  5  n number;
+  6  begin
+  7  eno:=&eno;
+  8  select sal,nvl(comm,0) into s,c from emp where empno=eno;
+  9  n:=s+c;
+ 10  dbms_output.put_line('Salary   = '||s||'  '||'Comm = '||c||' '||'Net Salary   = '||n);
+ 11  end;
+ 12  /
+Enter value for eno: 7499
+old   7: eno:=&eno;
+new   7: eno:=7499;
+Salary   = 1600  Comm = 300 Net Salary   = 1900
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7902
+old   7: eno:=&eno;
+new   7: eno:=7902;
+Salary   = 3000  Comm = 0 Net Salary   = 3000
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 100
+old   7: eno:=&eno;
+new   7: eno:=100;
+declare
+*
+ERROR at line 1:
+ORA-01403: no data found
+ORA-06512: at line 8
+
+SQL> declare
+  2  eno emp.empno%type;
+  3  s emp.sal%type;
+  4  c emp.comm%type;
+  5  n number;
+  6  begin
+  7  eno:=&eno;
+  8  select sal,nvl(comm,0) into s,c from emp where empno=eno;
+  9  n:=s+c;
+ 10  dbms_output.put_line('Salary  ='||s||'  '||'Comm = '||c||' '||'Net Salary  = '||n);
+ 11  exception
+ 12  when no_data_found then
+ 13  dbms_output.put_line('There is no such employee with this number...');
+ 14  end;
+ 15  /
+Enter value for eno: 7521
+old   7: eno:=&eno;
+new   7: eno:=7521;
+Salary  =1250  Comm = 500 Net Salary  = 1750
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 100
+old   7: eno:=&eno;
+new   7: eno:=100;
+There is no such employee with this number...
+
+PL/SQL procedure successfully completed.
+
+=======================================================================================
+
+declare
+qtyhand itemfile.qty_hand%type;
+relevel itemfile.re_level%type;
+begin
+select qty_hand,re_level into qtyhand,relevel from itemfile where itemcode='i001';
+exception
+when no_data_found then
+dbms_output.put_line('Itemcode not found in the table..');
+end;
+/
+
+=======================================================================================
+
+
+SQL> declare
+  2  d emp.deptno%type;
+  3  s emp.sal%type;
+  4  c emp.comm%type;
+  5  n number;
+  6  begin
+  7  d:=&deptno;
+  8  select sal,nvl(comm,0) into s,c from emp where deptno=d;
+  9  n:=s+c;
+ 10  dbms_output.put_line('Salary ='||s||'  '||'Comm  ='||c||' '||'Net Salary = '||n);
+ 11  exception
+ 12  when too_many_rows then
+ 13  dbms_output.put_line('Select statement returns more than one row...');
+ 14  when no_data_found then
+ 15  dbms_output.put_line('No Such Department ...');
+ 16  end;
+ 17  /
+Enter value for deptno: 10
+old   7: d:=&deptno;
+new   7: d:=10;
+Select statement returns more than one row...
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for deptno: 20
+old   7: d:=&deptno;
+new   7: d:=20;
+Select statement returns more than one row...
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for deptno: 40
+old   7: d:=&deptno;
+new   7: d:=40;
+No Such Department ...
+
+PL/SQL procedure successfully completed.
+
+SQL> declare
+  2  a number;
+  3  b number;
+  4  begin
+  5  a:=&a;
+  6  b:=&b;
+  7  dbms_output.put_line('Result =  '||to_char(a/b));
+  8  exception
+  9  when zero_divide then
+ 10  dbms_output.put_line('Division is not possible by 0 ');
+ 11  end;
+ 12  /
+Enter value for a: 4
+old   5: a:=&a;
+new   5: a:=4;
+Enter value for b: 2
+old   6: b:=&b;
+new   6: b:=2;
+Result =  2
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for a: 5
+old   5: a:=&a;
+new   5: a:=5;
+Enter value for b: 0
+old   6: b:=&b;
+new   6: b:=0;
+Division is not possible by 0
+
+PL/SQL procedure successfully completed.
+
+==================================================================================
+
+USER-DEFINED EXCEPTION :-
+
+User-defined exception taken care of by User explicitly
+
+We only declare the exception in declarative block
+
+we only raising the exception by keyword "raise" in executable block
+
+handling exception by exception handling block
+
+declare
+..
+..
+exceptionname exception;
+..
+..
+begin
+
+raise exceptionname;
+
+exception
+when exceptionname then
+..
+..
+end;
+/
+
+OTHERS handler - it traps all the exceptions
+
+exception
+when others then
+..
+..
+
+
+SQL> declare
+  2  eno emp.empno%type;
+  3  s emp.sal%type;
+  4  c emp.comm%type;
+  5  n number;
+  6  ex1 exception;
+  7  ex2 exception;
+  8  ex3 exception;
+  9  begin
+ 10  eno:=&eno;
+ 11  select sal,nvl(comm,0) into s,c from emp where empno=eno;
+ 12  if s<1000 then
+ 13  raise ex1;
+ 14  elsif s>1000 and s<2500 then
+ 15  raise ex2;
+ 16  else
+ 17  raise ex3;
+ 18  end if;
+ 19  exception
+ 20  when ex1 then
+ 21  dbms_output.put_line('Salary is Very low ...'||s);
+ 22  when ex2 then
+ 23  dbms_output.put_line('Sufficient Salary....'||s);
+ 24  when ex3 then
+ 25  dbms_output.put_line('Salary Exceeds.......'||s);
+ 26  when others then
+ 27  dbms_output.put_line('There no such employee with given number....');
+ 28  end;
+ 29  /
+Enter value for eno: 7369
+old  10: eno:=&eno;
+new  10: eno:=7369;
+Salary is Very low ...800
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7499
+old  10: eno:=&eno;
+new  10: eno:=7499;
+Sufficient Salary....1600
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 7839
+old  10: eno:=&eno;
+new  10: eno:=7839;
+Salary Exceeds.......5000
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for eno: 100
+old  10: eno:=&eno;
+new  10: eno:=100;
+There no such employee with given number....
+
+PL/SQL procedure successfully completed.
+
+===============================================================================================
+
+declare
+ex1 exception;
+qtyhand itemfile.qty_hand%type;
+begin
+select qty_hand into qtyhand from itemfile where itemcode='i001';
+if qtyhand <200 then
+raise ex1;
+end if;
+exception
+when ex1 then
+dbms_output.put_line('quantity not enough');
+when others then
+dbms_output.put_line('Itemcode not found..');
+end;
+/
+
+raise_application_error() is the procedure which helps to generating oracle error number and error message
+
+sqlcode and sqlerrm are the parameters of raise_application_error() procedure
+
+sqlcode returns oracle error number which is in the range of -20001 to -20999
+
+sqlerrm returns oracle error message
+
+Eg:
+
+raise_application_error(-20001,'You may insert in business hours..');
+
+
+============================================================================================
+
+State True / False 
+
+1.Predefined exceptions are raised automatically during runtime
+
+2.User-defined exceptions should be declared in the declarative part of PL/SQL block
+
+3.A procedure named raise_application_error() is used to define error messages
+
+Fill in Blanks 
+
+1.In PL/SQL error conditions are called ______________
+
+2.Types of exceptions are _____________ and ____________
+
+3.No_data_found,storage_error,... are some of the _____________
+
+4.If PLSQL runs out of memory, then a ____________ predefined exception is raised
+
+==========================================================================================
+
+Questions :-
+
+1.PLSQL supports DCL commands ?
+
+2. for i in 3..3 loop
+	...
+	..
+	end loop;
+
+The above statement howmany times will execute
+
+=====================================================================================
+
+declare
+qtydeld order_detail.qty_deld%type;
+qtyord order_detail.qty_ord%type;
+ex1 exception;
+begin
+select qty_ord,qty_deld into qtyord,qtydeld from order_detail where orderno='o001';
+if qtydeld > qtyord then
+raise ex1;
+else
+dbms_output.put_line('Quantity not delivered..');
+end if;
+exception
+when ex1 then
+dbms_output.put_line('Quantity is excess...');
+end;
+/
+
+==============================================================
+
+declare
+o_date order_master.odate%type;
+deldate order_master.del_date%type;
+ex1 exception;
+begin
+select odate,del_date into o_date,deldate from order_master where orderno='o001';
+if odate > deldate then
+raise ex1;
+else
+dbms_output.put_line('Dates are not the problem..');
+end if;
+exception
+when ex1 then
+dbms_output.put_line('Delivery date is very less than odaate');
+when others then
+dbms_output.put_line('Itemcode not found...');
+end;
+/
+
+==========================================
+
+EXCEPTION_INIT pragma
+
+- It is a named exception
+
+- Associated with a particular oracle error 
+
+- Gives the ability to trap the error specifically , rather than OTHERS handler
+
+pragma exception_init(exceptionname,oracle error number);
+
+Eg:
+
+declare
+ex1 exception
+pragma exception_init(dup_primary_key,-1);
+begin
+insert into itemfile values('i001','washer','spares',100,50,200,12.30);
+exception
+when dup_primary_key then
+dbms_output.put_line('duplicate item number..');
+end;
+/
+
+.........................................................................
+
+declare
+rate itemfile.itemrate%type;
+ex1 exception;
+begin
+select itemrate into rate from itemfile where itemcode='i001';
+if rate=0 then
+raise ex1;
+else
+dbms_output.put_line('itemrate is not zero..');
+end if;
+exception
+when ex1 then
+raise_application_error(-20001,'rate of an item cannot be zero..');
+end;
+/
+
+================================================================================
+
+State True or False 
+
+1.All user-defined error messages must be in the range of -20000 to -20999
+
+2.A PLSQL program can use the WHEN OTHERS syntax to create a generic exception handler
+
+3.To handle specific exception, they must be have a name
+
+Fill in Blanks 
+
+1.The ______ exception is used when all exceptions are to be trapped
+
+2.The ______ exception is raised when an attempt is made to reference a row in a PLSQL table that has not been defined
+
+3.The _____ procedure can be used to communicate client/server error in communication
+
+=======================================================================================
+
+CURSORS :-
+
+- Oracle allocates an area of the memory is known as context area for the processing of SQL statements
+
+- Context area contains information necessary to complete the processing, including number of rows processed by statatement
+
+- Cursor is nothing but private SQL area for processing SQL statement
+
+- Cursor is a handler or pointer to the context area
+
+- Through the cursor, a PLSQL program can control the context area 
+
+Here we have different types of cursors, they are
+
+Explicit Cursor
+
+Implicit cursor
+
+An explicit cursor is one in which the cursor name is explicitly assigns to the select statement
+
+An explicit cursor is used for all other SQL statements
+
+Processing of an implicit cursor is taken care of by PLSQL 
+
+Processing of an explicit cursor inolves in four steps, i.e
+
+Declaring a cursor
+
+Opening a cursor
+
+Fetching values from cursor
+
+Closing a cursor
+
+
+declare
+cursor <cursorname> is select statement;
+
+begin
+open <cursorname>;
+loop
+..
+..
+fetch <cursorname> into <localvariablelist>;
+
+exit when ...
+
+end loop;
+
+close <cursorname>;
+
+end;
+/
+
+To access userful information from retrived rows, we use cursor Attributes 
+
+%found
+%notfound
+%isopen	
+	These three are returns boolean values i.e true or false
+
+%rowcount - returns no.of rows fetched by cursor
+
+==================================================================================
+
+
+SQL> declare
+  2  cursor c1 is select empno,ename,job,sal from emp where deptno=10;
+  3  eno emp.empno%type;
+  4  en emp.ename%type;
+  5  j emp.job%type;
+  6  s emp.sal%type;
+  7  begin
+  8  open c1;
+  9  loop
+ 10  fetch c1 into eno,en,j,s;
+ 11  dbms_output.put_line('Empno ='||eno||' '||'Ename = '||en||' '||'Job  ='||j||' '||'Salary ='||s);
+ 12  exit when c1%notfound;
+ 13  end loop;
+ 14  dbms_output.put_line('No Of Rows Fetched = '||c1%rowcount);
+ 15  close c1;
+ 16  end;
+ 17  /
+Empno =7782 Ename = CLARK Job  =MANAGER Salary =2450
+Empno =7839 Ename = KING Job  =PRESIDENT Salary =5000
+Empno =7934 Ename = MILLER Job  =CLERK Salary =1300
+Empno =7934 Ename = MILLER Job  =CLERK Salary =1300
+No Of Rows Fetched = 3
+
+PL/SQL procedure successfully completed.
+
+SQL> declare
+  2  cursor c1 is select empno,ename,job,sal from emp where deptno=20;
+  3  eno emp.empno%type;
+  4  en emp.ename%type;
+  5  j emp.job%type;
+  6  s emp.sal%type;
+  7  begin
+  8  open c1;
+  9  loop
+ 10  fetch c1 into eno,en,j,s;
+ 11  dbms_output.put_line('Empno ='||eno||' '||'Ename ='||en||' '||'Job ='||j||' '||'Salary ='||s);
+ 12  exit when c1%notfound;
+ 13  end loop;
+ 14  close c1;
+ 15  dbms_output.put_line('No Of Rows Fetched = '||c1%rowcount);
+ 16  end;
+ 17  /
+Empno =7369 Ename =SMITH Job =CLERK Salary =800
+Empno =7566 Ename =JONES Job =MANAGER Salary =2975
+Empno =7788 Ename =SCOTT Job =ANALYST Salary =3000
+Empno =7876 Ename =ADAMS Job =CLERK Salary =1100
+Empno =7902 Ename =FORD Job =ANALYST Salary =3000
+Empno =7902 Ename =FORD Job =ANALYST Salary =3000
+declare
+*
+ERROR at line 1:
+ORA-01001: invalid cursor
+ORA-06512: at line 15
+
+SQL> declare
+  2  cursor c1 is select empno,ename,job,sal from emp where deptno=20;
+  3  eno emp.empno%type;
+  4  en emp.ename%type;
+  5  j emp.job%type;
+  6  s emp.sal%type;
+  7  begin
+  8  open c1;
+  9  loop
+ 10  fetch c1 into eno,en,j,s;
+ 11  dbms_output.put_line('Empno ='||eno||' '||'Ename ='||en||' '||'Job ='||j||' '||'Salary ='||s);
+ 12  exit when c1%notfound;
+ 13  end loop;
+ 14  close c1;
+ 15  dbms_output.put_line('No Of Rows Fetched = '||c1%rowcount);
+ 16  exception
+ 17  when others then
+ 18  dbms_output.put_line('Cursor is Already Closed....');
+ 19  end;
+ 20  /
+Empno =7369 Ename =SMITH Job =CLERK Salary =800
+Empno =7566 Ename =JONES Job =MANAGER Salary =2975
+Empno =7788 Ename =SCOTT Job =ANALYST Salary =3000
+Empno =7876 Ename =ADAMS Job =CLERK Salary =1100
+Empno =7902 Ename =FORD Job =ANALYST Salary =3000
+Empno =7902 Ename =FORD Job =ANALYST Salary =3000
+Cursor is Already Closed....
+
+PL/SQL procedure successfully completed.
+
+
+SQL> declare
+  2  cursor c1 is select empno,ename,job from emp where job='CLERK';
+  3  eno emp.empno%type;
+  4  en emp.ename%type;
+  5  j emp.job%type;
+  6  begin
+  7  open c1;
+  8  loop
+  9  fetch c1 into eno,en,j;
+ 10  exit when c1%notfound;
+ 11  end loop;
+ 12  dbms_output.put_line('No Of Rows fetched = '||c1%rowcount);
+ 13  close c1;
+ 14  end;
+ 15  /
+No Of Rows fetched = 4
+
+PL/SQL procedure successfully completed.
+
+SQL> declare
+  2  cursor c1 is select empno,ename,job from emp where job='CLERK';
+  3  eno emp.empno%type;
+  4  en emp.ename%type;
+  5  j emp.job%type;
+  6  begin
+  7  open c1;
+  8  loop
+  9  fetch c1 into eno,en,j;
+ 10  dbms_output.put_line('No Of Rows Fetched = '||c1%rowcount);
+ 11  exit when c1%notfound;
+ 12  end loop;
+ 13  close c1;
+ 14  end;
+ 15  /
+No Of Rows Fetched = 1
+No Of Rows Fetched = 2
+No Of Rows Fetched = 3
+No Of Rows Fetched = 4
+No Of Rows Fetched = 4
+
+PL/SQL procedure successfully completed.
+
+======================================================================================
+
+
+SQL> declare
+  2  cursor c1 is select empno from emp;
+  3  eno emp.empno%type;
+  4  begin
+  5  if not c1%isopen then
+  6  dbms_output.put_line('Cursor is not Yet Opened...');
+  7  end if;
+  8  open c1;
+  9  if c1%isopen then
+ 10  dbms_output.put_line('Cursor is now opened...');
+ 11  loop
+ 12  fetch c1 into eno;
+ 13  dbms_output.put_line('Empno   = '||eno);
+ 14  exit when c1%notfound;
+ 15  end loop;
+ 16  dbms_output.put_line('No Of Rows Fetched = '||c1%rowcount);
+ 17  end if;
+ 18  close c1;
+ 19  end;
+ 20  /
+Cursor is not Yet Opened...
+Cursor is now opened...
+Empno   = 7369
+Empno   = 7499
+Empno   = 7521
+Empno   = 7566
+Empno   = 7654
+Empno   = 7698
+Empno   = 7782
+Empno   = 7788
+Empno   = 7839
+Empno   = 7844
+Empno   = 7876
+Empno   = 7900
+Empno   = 7902
+Empno   = 7934
+Empno   = 7934
+No Of Rows Fetched = 14
+
+PL/SQL procedure successfully completed.
+
+====================================================================================
+
+To simplify explicit cursor steps, we use cursor..for loop
+
+for <variablename> in <cursor variable>
+loop
+..
+..
+end loop;
+
+Eg:
+
+
+SQL> declare
+  2  cursor c1 is select empno from emp;
+  3  f1 c1%rowtype;
+  4  begin
+  5  for f1 in c1
+  6  loop
+  7  dbms_output.put_line('Empno   ='||f1.empno);
+  8  end loop;
+  9  end;
+ 10  /
+Empno   =7369
+Empno   =7499
+Empno   =7521
+Empno   =7566
+Empno   =7654
+Empno   =7698
+Empno   =7782
+Empno   =7788
+Empno   =7839
+Empno   =7844
+Empno   =7876
+Empno   =7900
+Empno   =7902
+Empno   =7934
+
+PL/SQL procedure successfully completed.
+
+============================================================================================
+
+IMPLICIT CURSOR :-
+
+- Implicit cursor taken care of by PLSQL program implicitly
+
+- Working with all other SQL statements
+
+- Processing only one row
+
+- No need to declare a cursor
+
+- No need to open a cursor
+
+- No Fetch values from cursor
+
+- No need to close a cursor
+
+Whatever SQL statement processed recently that will be referred as SQLCURSOR
+
+
+SQL> begin
+  2  delete from emp1 where deptno=10;
+  3  if sql%notfound then
+  4  dbms_output.put_line('No data found...');
+  5  else
+  6  dbms_output.put_line(sql%rowcount||'  Rows Deleted...');
+  7  end if;
+  8  end;
+  9  /
+3  Rows Deleted...
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+No data found...
+
+PL/SQL procedure successfully completed.
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> select * from emp1 where deptno=10;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+===================================================================================================
+
+Questions :-
+
+1.After closing a cursor, is it possible to reopen it
+
+2.How is cursor..for loop different from explicit cursor
+
+3.What does storage_error and program_error specify
+
+4.What is meant by rowtype_mismatch? give one example
+
+5.What are sqlcode and sqlerrm associated with? How can they be used ?
+
+=================================================================================================
+

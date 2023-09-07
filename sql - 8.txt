@@ -1,0 +1,986 @@
+PLSQL :
+
+- Fundamentals in PLSQL
+
+	Anonymous blocks (Declarative part,Executable part,Exception handling part)
+
+	Structure of a PLSQL progam
+		
+		declare
+		...
+		begin
+		...
+		..
+		exception
+		when exceptionname then
+		..
+		end;
+		/
+	PLSQL attributes (%type ,%rowtype)
+
+	SELECT columnlist INTO localvariablelist from tablename;
+	
+	Control Statements (if - else,elsif)
+
+	Iterations 
+		Simple loop
+
+		loop
+		..
+		..
+		exit when ..
+		end loop;
+	
+		while loop 
+
+		while condition
+		loop
+		..
+		..
+		end loop;
+
+In while loop, first control checks the condition, if condition is true only statements will be executed, after executing statements again control check the condition , if condition is true then once again statements will be executed till given condition is false
+
+		For loop
+
+		for variablename in lowerbound..upperbound
+		loop
+		..
+		..
+		end loop;
+
+		Goto statement
+
+			Goto label
+
+			<<label>>
+
+...........................................................................................................
+
+EXCEPTION HANDLING 
+
+Exception is nothing but runtime error
+
+Exception occurs during execution of the program
+
+Exception handling block is used to stop the program from abnormal termination
+
+		declare
+		...
+		begin
+		...
+		..
+		exception
+		when exceptionname then
+		..
+		end;
+		/
+
+Here we have two types of exceptions, they are
+
+Pre-defined exceptions
+
+	All pre-defined exceptions taken care of by PLSQL program implicitly
+
+	List of pre-defined exceptions :
+
+		no_data_found
+		too_many_rows
+		zero_divide
+		cursor_already_open
+		invalid_cursor
+		storage_error
+		program_error
+		invalid_number
+		logon_denied
+
+User-defined exceptions taken care of by user explicitly
+
+We only declaring exception in declarative part, raising exception in executable part with "raise" keyword, handling by exception handling block
+
+declare
+..
+..
+exceptionname exception;
+
+begin
+
+raise exceptionname;
+
+exception
+when exceptionname then
+..
+..
+end;
+/
+
+OTHERS handler - it traps all the exception
+
+raise_application_error() is the procedure to print oracle error number and oracle error message
+
+sqlcode and sqlerrm are parameters of raise_application_error() procedure
+
+sqlcode returns oracle error number which is in the range of -20000 to -20999
+
+sqlerrm returns oracle erroe message 
+
+Eg:
+
+raise_application_error(-20001,'You may insert in business hours....');
+
+pragma exception_init(exceptionname,oracle error number);
+
+.....................................................................................
+
+CURSOR :-
+
+- Oracle allocates an area of the memory is known as context area for processing SQL statements
+
+- Cursor is nothing but private SQL area for processing SQL statements
+
+- Cursor is a handler / pointer to control context area through PLSQL program
+
+Explicit cursor
+
+Explicitly assigns only one SQL statement at compilation time
+
+Processing multiple rows individually
+
+Processing of explicit cursor involved in four steps, they are
+
+	Declare a cursor
+
+	Open a cursor
+
+	Fetch values from cursor
+
+	Close a cursor
+
+declare
+cursor <cursorname> is select statement;
+
+begin
+
+open <cursorname>;
+
+loop
+
+fetch <cursorname> into <local variablelist>;
+
+end loop;
+
+close c1;
+
+end;
+/
+
+Cursor Attributes :-
+
+%found
+%notfound
+%isopen
+	- these three are returns boolean values i.e true / false
+
+%rowcount - returns no.of rows fetched by cursor
+
+To simplify explicit cursor steps we use cursor..for loop
+
+for <variablename> in <cursor variable>
+loop
+..
+..
+end loop;
+
+Implicit cursor 
+
+- taken care of by PLSQL program implicitly,processing only one row
+
+- working with all other SQL statements
+
+- no need to declare a cursor
+
+- no need to open a cursor
+
+- no need to fetch values from cursor
+
+- no need to close a cursor
+
+Whatever we process SQL statement recently that will be referred as SQLCURSOR
+
+REF cursor :-
+
+Cursor variable is a reference type to refer the data which is in different storage locations
+
+Cursor variable like a pointer
+
+T1
+
+T2			Open a cursor variable to process the data which in different storage locations
+
+T3	
+
+open cursorvariable for statement here we use
+
+type <typename> is ref cursor return <returntype>;
+
+...........................................................................................
+
+SUBPROGRAMS :-
+
+Subprograms are named PLSQL blocks which performs a specific task
+
+Modularity
+
+	Subprogram allows us to break a program into manageable , well-defined logical modules
+
+	each module performs a specific task
+
+Reusability
+
+	Once we compile subprogram successfully that can be used in any number of applications
+
+Maintenability
+
+PLSQL supports two types of subprograms, they are
+
+	Stored procedures
+	Functions
+
+Stored procedure is a named PLSQL block which performs a specific task
+
+Instead of writing SQLcode over and over again we call stored procedure
+
+Because we save SQLcode as part of stored procedure in the database
+
+Stored procedure definition is as follows :
+
+create or replace procedure <procedurename>(parameter list)
+is
+..
+..
+begin
+..
+..
+exception
+when exceptionname then
+..
+..
+end;
+/
+
+Executing procedure :
+
+exec procedurename(parameter list);
+
+select * from user_source where name='PROCEDURENAME';
+
+While invoking the procedure itself we give values to the parameters
+
+drop procedure <procedurename>;
+
+Parameter modes :-
+
+in (By default)  input parameter
+
+	While invoking / executing stored procedure itself we give values to the parameters
+
+out	- output parameters
+
+	Here we write the result of caller of subprogram to undefined variable
+
+	Procedure executed from another PLSQL program
+
+inout	- initializing values to the variable and also we can have updated values to itself
+
+	Procedure executed from another PLSQL program
+
+Functions :-
+
+Function compute a value
+
+Function returns some value
+
+create or replace function <functionname>(argument list)
+return datatype
+is
+.
+..
+begin
+..
+..
+end;
+/
+
+Calling function :
+
+select functionname(argument list) from dual;
+
+Here "dual" is a dummy table which having a single row and single column , it is common to all users
+
+select * from user_source where name='FUNCTIONNAME';
+
+drop function <functionname>;
+
+----------------------------------------------------------------------------------------------------
+
+PACKAGE :-
+
+Package is an encapsulation of all PLSQL types,variables,constants,exceptions,cursors,procedure,functions
+
+Packages are having two parts, namely
+
+Package specification and Package body
+
+In Package specification , we declare all PLSQL types,variables,constants,cursor,procedures,functions
+
+These can be underlying implementation in Package body
+
+Package specification is as follows :
+
+create or replace package <packagename>
+is
+..
+..
+..
+end packagename;
+/
+
+Package body is as follows :
+
+create or replace package body <packagename>
+is
+..
+..
+..
+end packagename;
+/
+
+exec packagename.procedurename(parameter list);
+
+select packagename.functionname(argument list) from dual;
+
+Oracle stores package spefication and package body seperately in data dictionary
+
+select * from user_source where name='PACKAGENAME';
+
+drop package <packagename>;
+
+Advantages :-
+
+- Modularity
+
+- Easier application design
+
+- One time compilation
+
+- Added functionality
+
+- Better performance
+
+- Information hiding
+
+Only packaged subprograms can be overloaded
+
+overloading means, same subprogram (procedure,function) can be defined more than once with different number of arguments
+
+Eg:
+
+
+SQL> set serveroutput on
+SQL> create or replace package emp_pack
+  2  is
+  3  procedure emp_proc(eno number);
+  4  function addn(x int,y int) return int;
+  5  end emp_pack;
+  6  /
+
+Package created.
+
+SQL> create or replace package body emp_pack
+  2  is
+  3  procedure emp_proc(eno number)
+  4  as
+  5  s emp.sal%type;
+  6  c emp.comm%type;
+  7  n number;
+  8  begin
+  9  select sal,nvl(comm,0) into s,c from emp where empno=eno;
+ 10  n:=s+c;
+ 11  dbms_output.put_line('Salary ='||s||'  '||'Comm  ='||c||' Net Salary   ='||n);
+ 12  exception
+ 13  when exceptionname then
+ 14  dbms_output.put_line('There is no Such Employee is there ...');
+ 15  end emp_proc;
+ 16  function addn(x int,y int) return int
+ 17  is
+ 18  z int;
+ 19  begin
+ 20  z:=x+y;
+ 21  return z;
+ 22  end addn;
+ 23  end emp_pack;
+ 24  /
+
+Warning: Package Body created with compilation errors.
+
+SQL> sho err
+Errors for PACKAGE BODY EMP_PACK:
+
+LINE/COL ERROR
+-------- -----------------------------------------------------------------
+3/1      PL/SQL: Item ignored
+13/6     PLS-00201: identifier 'EXCEPTIONNAME' must be declared
+SQL> create or replace package body emp_pack
+  2  is
+  3  procedure emp_proc(eno number)
+  4  as
+  5  s emp.sal%type;
+  6  c emp.comm%type;
+  7  n number;
+  8  begin
+  9  select sal,nvl(comm,0) into s,c from emp where empno=eno;
+ 10  n:=s+c;
+ 11  dbms_output.put_line('Salary ='||s||'  '||'Comm  ='||c||' Net Salary   ='||n);
+ 12  exception
+ 13  when others then
+ 14  dbms_output.put_line('There is no Such Employee is there ...');
+ 15  end emp_proc;
+ 16  function addn(x int,y int) return int
+ 17  is
+ 18  z int;
+ 19  begin
+ 20  z:=x+y;
+ 21  return z;
+ 22  end addn;
+ 23  end emp_pack;
+ 24  /
+
+Package body created.
+
+SQL> exec emp_pack.emp_proc(7902);
+Salary =3000  Comm  =0 Net Salary   =3000
+
+PL/SQL procedure successfully completed.
+
+SQL> exec emp_pack.emp_proc(100);
+There is no Such Employee is there ...
+
+PL/SQL procedure successfully completed.
+
+SQL> select emp_pack.addn(20,20) from dual;
+
+EMP_PACK.ADDN(20,20)
+--------------------
+                  40
+
+SQL> declare
+  2  a number;
+  3  begin
+  4  a:=emp_pack.addn(20,30);
+  5  dbms_output.put_line('Value of a = '||a);
+  6  end;
+  7  /
+Value of a = 50
+
+PL/SQL procedure successfully completed.
+
+.........................................................
+
+select * from user_source where name='EMP_PACK';
+
+drop package emp_pack;
+
+======================================================================================
+
+create or replace package pack_me
+is
+procedure order_proc(orno varchar);
+function order_fun(ornos varchar) return varchar;
+end pack_me;
+/
+
+create or replace package body pack_me
+is
+procedure order_proc(orno varchar)
+is
+stat char(1);
+begin
+select o_status into stat from order_master where orderno=orno;
+if stat='p then
+dbms_output.put_line('Pending Order ...');
+else
+dbms_output.put_line('Completed Order ...');
+end if;
+end order_proc;
+function order_fun(ornos varchar) return varchar is
+icode order_detail.itemcode%type;
+ocode order_detail.orderno%type;
+qtyord order_detail.qty_ord%type;
+qtydeld order_detail.qty_deld%type;
+begin
+select qty_ord,qty_deld,itemcode,orderno into qtyord,qtydeld,icode,ocode from order_detail where orderno=ornos;
+if qtyord < qtydeld then
+return ocode;
+else
+return icode;
+end if;
+end order_fun;
+end pack_me;
+/
+
+exec pack_me.order_proc('o001');
+
+declare
+a varchar(15);
+b varchar(15);
+begin
+b:=pack_me.order_fun('o001');
+dbms_output.put_line('Itemcode  = '||b);
+end;
+/
+
+=========================================================================================
+
+CURSORS IN PACKAGES :-
+
+When a cursor is declared in the package specification then there must be a return clause associated with the cursor
+
+- A record defined from a database table using %ROWTYPE attribute
+
+- A record defined from a programmer defined record
+
+create or replace package cur_pack
+is
+cursor c1 return order_master%rowtype;
+procedure ord_pro(orno varchar);
+end cur_pack;
+/
+
+create or replace package body cur_pack
+is
+cursor c1 return order_master%rowtype is select * from order_master;
+procedure ord_pro(orno varchar)
+is
+or_rec order_master%rowtype;
+begin
+open c1;
+loop
+fetch c1 into or_rec;
+exit when c1%notfound;
+dbms_output.put_line('Values are : ' ||or_rec.orderno);
+end loop;
+end ord_pro;
+end cur_pack;
+/
+
+==============================================================================
+
+True or False
+
+1.Oracle stores the package specification and package body seperately in the data dictionary
+
+2.Package can be nested
+
+3.Items declared in the package specification can be termed as public
+
+Fill in Blanks
+
+1.The _____ is used to check the purity of functions
+
+2.The return clause of a cursor can contain a _____ attribute
+
+3.A _________ element cannot be referenced outside the package
+
+======================================================================================
+
+TRIGGERS :-
+
+- Trigger is nothing but a constraint which are used to present the duplicate values into the table
+
+- To enfoce complex integrity constraint
+
+- To generate data automatically
+
+- To audit the information
+
+- To validate the data
+
+- To modify complex view
+
+create or replace trigger <triggername>
+trigger_timing trigger_event
+on tablename
+trigger_type
+begin
+..
+..
+end;
+/
+
+trigger_timing : Before  / After
+
+trigger_event : insert or update or delete
+
+trigger_type : row level trigger (For each row) / statement level trigger (For each statement)
+
+trigger_body : PLSQL block (begin..end)
+
+When we write DML statement (insert or update or delete) on the table then trigger will be fired implicitly
+
+row level triggers fires once for each row affected in a table
+
+statement level trigger fires once for an entire table
+
+Default trigger type is : statement level trigger (for each statement)
+
+select * from user_triggers where table_name='TABLENAME';
+
+alter table <tablename> enable/ disable all triggers;
+
+alter table <tablename> enable / disable trigger <triggername>;
+
+drop trigger <triggername>;
+
+STORED PROCEDURES					TRIGGERS
+
+Invoked explicitly					Invoked implictly when we write insert/update/delete
+
+does not allow trigger					Allows stored procedure if code is very lengthy
+
+source code is in USER_SOURCE				source code is in USER_TRIGGERS
+
+Allows COMMIT / ROLLBACK				Does not allowed COMMIT / ROLLBACK
+
+...................................................................................................
+
+Eg:
+
+
+SQL> create or replace trigger secure_emp
+  2  before insert on emp
+  3  begin
+  4  if to_char(sysdate,'DY') in('SAT','SUN') then
+  5  raise_application_error(-20001,'You may insert in business Days..');
+  6  end if;
+  7  end;
+  8  /
+
+Trigger created.
+
+SQL> insert into emp(empno,hiredate) values(100,sysdate);
+
+1 row created.
+
+SQL> select * from emp where empno=100;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+       100                                 05-OCT-21
+
+SQL> select trigger_name,trigger_type,trigger_event from user_triggers where table_name='EMP';
+select trigger_name,trigger_type,trigger_event from user_triggers where table_name='EMP'
+                                 *
+ERROR at line 1:
+ORA-00904: "TRIGGER_EVENT": invalid identifier
+
+
+SQL> select trigger_name,trigger_type from user_triggers where table_name='EMP';
+
+TRIGGER_NAME                   TRIGGER_TYPE
+------------------------------ ----------------
+SECURE_EMP                     BEFORE STATEMENT
+
+SQL> drop trigger secure_emp;
+
+Trigger dropped.
+
+SQL> create or replace trigger secure_emp
+  2  before insert or update or delete on emp
+  3  begin
+  4  if to_char(sysdate,'DY') in('SAT','SUN') or to_char(sysdate,'HH24:MI') not between '8:00' and '16:00' then
+  5     if inserting then
+  6  raise_application_error(-20001,'You may insert in business hours/Days..');
+  7  elsif updating then
+  8  raise_application_error(-20002,'You may update in business hours/Days..');
+  9  elsif deleting then
+ 10  raise_application_error(-20003,'You may delete in business hours/Days..');
+ 11  end if;
+ 12  end if;
+ 13  end;
+ 14  /
+
+Trigger created.
+
+SQL> delete from emp where empno=100;
+delete from emp where empno=100
+            *
+ERROR at line 1:
+ORA-20003: You may delete in business hours/Days..
+ORA-06512: at "SCOTT.SECURE_EMP", line 8
+ORA-04088: error during execution of trigger 'SCOTT.SECURE_EMP'
+
+
+SQL> select trigger_name,trigger_type from user_triggers where table_name='EMP';
+
+TRIGGER_NAME                   TRIGGER_TYPE
+------------------------------ ----------------
+SECURE_EMP                     BEFORE STATEMENT
+
+SQL> drop trigger secure_emp;
+
+Trigger dropped.
+
+=======================================================================================================
+
+create or replace trigger orders
+before insert on order_detail for each row
+declare
+orno order_detail.orderno%type;
+begin
+select orderno into orno from order_detail where qty_ord < qty_deld;
+if orno ='o001' then
+raise_application_error(-20001,'enter some other number..');
+end if;
+end;
+/
+
+...............................................
+
+create or replace trigger orders_trig
+before delete on order_master
+begin
+raise_application_error(-20001,'detail record may be present');
+end;
+/
+
+..................................................
+
+create or replace trigger newoldtrig
+before update on itemfile for each row
+begin
+if :new.qty_hand < :old.qty_hand then
+raise_application_error(-20001,'Quantity on hand is less');
+end if;
+end;
+/
+
+update itemfile set qty_hand = qty_hand -200 where itemcode='i001';
+
+--------------------------------------------------------------------------------------
+
+Mutating Tables :
+
+A mutating table is a table is currently being modified by an update or delete or insert statement or a table that might need to be updated by the effects of a declarative delete cascade referential integrity constraint
+
+Constraining Tables :
+
+A constraining table is a table that a triggering statement might need to read directly, for a SQL statement, or indirectly, for a declarative referential integrity constraint
+
+Eg:
+
+create or replace trigger update_trig 
+before update on order_detail
+for each row
+begin
+update order_detail set itemcode='i001' where qty_ord=100;
+end;
+/
+
+update order_detail set itemcode='i002';
+
+.................................................................................................
+
+INSTEAD OF TRIGGERS :-
+
+create view order_view as
+select order_master.orderno,o_status,qty_ord,qty_deld
+from order_master,order_detail
+where order_master.orderno = order_detail.orderno;
+
+create or replace trigger order_trig
+instead of insert on order_view
+referencing new as n for each row
+begin
+cursor c1 is select * from order_master where order_master.orderno =:n.orderno;
+cursor c2 is select * from order_detail where order_detail.orderno =:n.orderno;
+a c1%rowtype;
+b c2%rowtype;
+begin
+open c1;
+open c2;
+fetch c1 into a;
+fetch c2 into b;
+if c1%notfound then
+insert into order_master(orderno,o_status) values(:n.orderno,:n.o_status);
+end if;
+close c1;
+close c2;
+end;
+/
+
+===============================================================================================
+
+True or False :
+
+1.Triggers cannot be enabled or disabled
+
+2.Triggers can be applied only to tables
+
+3.An instead of trigger fires only once for the application defined
+
+
+Fill in Blanks 
+
+1.A __________ is a table that is currently being modified by an update,delete or insert statement
+
+2.Restrictions on a trigger can be achieved using the ___________ clause
+
+3.A database trigger has three parts, namely _________________________
+
+==================================================================================================
+
+Questions :-
+
+1.What is meant by Anonymous block
+
+2.What is the structure of a PLSQL program
+
+3.What is the use of exception handling block
+
+4.
+	declare
+	..
+	..
+	begin
+	..
+	..
+	exception
+	when no_data_found then
+	..
+	when too_many_rows then
+	..
+	when zero_divide then
+	..
+	..
+	when others then
+	..
+	..
+In above program, which exception will executed
+
+5.What is the use of pragma exception_init
+
+6.What is the use of cursor
+
+7.What is meant by Activeset
+
+8.What are types of cursors
+
+9.What is the difference between EXPLICIT CURSOR and IMPLICIT CURSOR
+
+10.What is the use of CURSOR..FOR loop
+
+11.What is the difference between STORED PROCEDURE and FUNCTION
+
+12.What are the parater modes are there in stored procedures
+
+13.What are advantages of packages
+
+14.What is a trigger
+
+15.What are differences between STORED PROCEDURES and TRIGGERS
+
+16.How will you differentiate database triggers and integrity constraints
+
+17.What is meant by mutating table
+
+18.Is it possible to grant a trigger
+
+19.What are the conditions that apply for updating,inserting,and deleting from a join view
+
+20.Can a mutating constraint be avoided
+
+21.What is the difference between VARCHAR and VARCHAR2
+
+22.What is the difference between ROWID and ROWNUM
+
+23.What is meant by psuedo column
+
+24.What are differences between TRUNCATE,DELETE,DROP
+
+25.Is it possible to creating a table using SELECT statement
+
+26.What is the use of "dual" table
+
+27.Is it possible to copy only table structure of an existing one into another
+
+28.Which operator is faster "in" or "exists" operator
+
+29.What is the order of precedence of CLAUSES
+
+30.What is the use DEFAULT keyword
+
+31.What is meant by redundancy
+
+32.What is the use constraints
+
+33.Howmany types of constraints
+
+34.What is the difference between UNIQUE and PRIMARY KEY constraint
+
+35.What is meant by composite constraint
+
+36.What is a foreign key
+
+37.What is the use of ON DELETE CASCADE clause
+
+38.What is meant by cartesian product
+
+39.What is the purpose of JOINS
+
+40.Howmany types of JOINS
+
+41.What is the difference between INNER JOIN and OUTER JOIN
+
+42.When will you write SELF JOIN
+
+43.What is the difference between SETOPERATORS and JOINS
+
+44.What is meant by column ambiguity
+
+45.What is the difference between COLUMNALIAS and TABLEALIAS
+
+46.Find Each Employee experience in terms of No Of Years,No of Months
+
+47.Find First Highest Salary
+
+48.Find Second Highest Salary
+
+49.What is the use of Subqueries
+
+50.Howmany types of subqueries
+
+51.What is the difference between SUBQUERY and CORRELATED SUBQUERIES
+
+51.How can i delete duplicate records
+
+52.What are uses of views
+
+53.What is the difference between SIMPLE VIEW and COMPLEX VIEW
+
+54.What is meant by meta data
+
+55.What is the use of DATA DICTIONARY table, give some examples
+
+56.What is the use of INDEXES
+
+57.What is the use of PARTITIONS
+
+58.What is the use of LOCKS
+
+59.Explain about Varrays
+
+60.Explain about Nested Tables
+
+==================================================================================================
+
+ 

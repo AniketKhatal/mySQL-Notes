@@ -1,0 +1,2204 @@
+Database Objects :-
+
+SYNONYM
+
+SEQUENCE
+
+VIEW
+
+INDEX
+
+SYNONYM :-
+
+- Aliasname for an entire table / view / sequence
+
+- Simplify SQL statements
+
+- Hide the name and owner of an object
+
+- act like a table
+
+create synonym <synonymname> for <tablename>;
+
+Querying on USER_SYNONYMS will provide all synonym details that the user has created
+
+select * from user_synonyms;
+
+We can perform all DML operations like insert,update,delete on synonym
+
+Any insertions,updations,deletions on synonym that will be effect base table,base table to synonym
+
+drop synonym <synonymname>;
+
+Eg:-
+
+
+SQL> create synonym esy for emp;
+
+Synonym created.
+
+SQL> select * from esy;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+14 rows selected.
+
+SQL> select * from emp;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+14 rows selected.
+
+SQL> insert into esy(empno) values(100);
+
+1 row created.
+
+SQL> select empno from esy;
+
+     EMPNO
+----------
+       100
+      7369
+      7499
+      7521
+      7566
+      7654
+      7698
+      7782
+      7788
+      7839
+      7844
+
+     EMPNO
+----------
+      7876
+      7900
+      7902
+      7934
+
+15 rows selected.
+
+SQL> select empno from emp;
+
+     EMPNO
+----------
+       100
+      7369
+      7499
+      7521
+      7566
+      7654
+      7698
+      7782
+      7788
+      7839
+      7844
+
+     EMPNO
+----------
+      7876
+      7900
+      7902
+      7934
+
+15 rows selected.
+
+SQL> delete from emp where empno=100;
+
+1 row deleted.
+
+SQL> select empno from esy;
+
+     EMPNO
+----------
+      7369
+      7499
+      7521
+      7566
+      7654
+      7698
+      7782
+      7788
+      7839
+      7844
+      7876
+
+     EMPNO
+----------
+      7900
+      7902
+      7934
+
+14 rows selected.
+
+SQL> select * from user_synonyms;
+
+SYNONYM_NAME                   TABLE_OWNER                    TABLE_NAME
+------------------------------ ------------------------------ ------------------------------
+DB_LINK
+----------------------------------------------------------------------------------------------------
+ESY                            SCOTT                          EMP
+
+
+
+SQL> drop synonym esy;
+
+Synonym dropped.
+
+SQL> select empno from emp;
+
+     EMPNO
+----------
+      7369
+      7499
+      7521
+      7566
+      7654
+      7698
+      7782
+      7788
+      7839
+      7844
+      7876
+
+     EMPNO
+----------
+      7900
+      7902
+      7934
+
+14 rows selected.
+
+=====================================================================================
+
+STATE TRUE OR FALSE :-
+
+1.A synonym can be an alternative name for another synonym
+
+2.You can create a synonym and a table with same name
+
+3.Drop synonym <synonymname> will drop the table itself
+
+Fill in Blanks :-
+
+1.Only the _____________ can create public synonyms
+
+2.Public synonyms are owned by ________________
+
+3.____________ operations are not allowed on synonym
+
+====================================================================================
+
+SEQUENCE :-
+
+Sequence is a database object which can generate unique sequential integer values.
+
+It can be used to automatically generate primary key or unique key values
+
+A sequence can be either in an ascending order / descending order
+
+create sequence <sequencename>
+start with n
+increment by n
+minvalue n
+maxvalue n
+cycle/nocycle
+cache/nocache;
+
+start with n :- specifies the first sequence numbers to be generated
+
+increment by n :- n is an integer which specifies the interval between sequence numbers. The default is 1
+
+Minvalue n :- specifies the minimum value of the sequence
+
+Maxvalue n :- It specifies the maximum value of the sequence can generate. 
+
+Cycle :- Specifies that the sequence continues to generate vaalues from the beginning after reaching either its max or min value
+
+Nocycle :- Specifies that the sequence cannot generate more values after reaching its maximum value or minimum value. The default cycle option is nocycle
+
+cache :- The cache option pre-allocates a set of sequence numbers and retains them in memory so that sequence numbers can be accessed faster. When the last of the sequence numbers in the cache has been used, oracle reads another set of numbers into the cache
+
+Nocache :- The default value 'nocache', does not preallocate sequence numbers for faster access
+
+Alter sequence :-
+
+- set or eliminate minvalue or maxvalue
+
+- change the increment value
+
+- change the number of cached sequence numbers
+
+alter sequence <sequencename> maxvalue .. cycle .. cache ...;
+
+Querying on USER_SEQUENCES will provide all sequence details that the user has created
+
+select * from user_sequences where sequence_name='SEQUENCENAME';
+
+drop sequence <sequencename>;
+
+create sequence <sequencename>;
+
+To generate sequence values we use psuedo columns called "nextval" and "currval"
+
+psuedo column behaves like a table column , but it is not stored in the table
+
+nextval - returns initial value of the sequence when it refer for the first time
+
+currval - returns current value of the sequence
+
+select sequencename.nextval from dual;
+
+/
+/
+
+select sequencename.currval from dual;
+
+Here dual is a dummy table which having a single row and single column , it is common to all users
+
+Eg:
+
+
+SQL> create sequence eseq
+  2  start with 1
+  3  increment by 1
+  4  minvalue 1
+  5  maxvalue 10;
+
+Sequence created.
+
+SQL> select eseq.nextval from dual;
+
+   NEXTVAL
+----------
+         1
+
+SQL> /
+
+   NEXTVAL
+----------
+         2
+
+SQL> /
+
+   NEXTVAL
+----------
+         3
+
+SQL> /
+
+   NEXTVAL
+----------
+         4
+
+SQL> /
+
+   NEXTVAL
+----------
+         5
+
+SQL> /
+
+   NEXTVAL
+----------
+         6
+
+SQL> /
+
+   NEXTVAL
+----------
+         7
+
+SQL> /
+
+   NEXTVAL
+----------
+         8
+
+SQL> /
+
+   NEXTVAL
+----------
+         9
+
+SQL> /
+
+   NEXTVAL
+----------
+        10
+
+SQL>
+SQL> /
+select eseq.nextval from dual
+*
+ERROR at line 1:
+ORA-08004: sequence ESEQ.NEXTVAL exceeds MAXVALUE and cannot be instantiated
+
+
+SQL> select * from user_sequences where sequence_name='ESEQ';
+
+SEQUENCE_NAME                   MIN_VALUE  MAX_VALUE INCREMENT_BY C O CACHE_SIZE LAST_NUMBER
+------------------------------ ---------- ---------- ------------ - - ---------- -----------
+ESEQ                                    1         10            1 N N         20          11
+
+SQL> select eseq.currval from dual;
+
+   CURRVAL
+----------
+        10
+
+SQL> insert into emp(empno) values(eseq.currval);
+
+1 row created.
+
+SQL> select empno from emp;
+
+     EMPNO
+----------
+        10
+      7369
+      7499
+      7521
+      7566
+      7654
+      7698
+      7782
+      7788
+      7839
+      7844
+
+     EMPNO
+----------
+      7876
+      7900
+      7902
+      7934
+
+15 rows selected.
+
+SQL> alter sequence eseq maxvalue 20 cycle cache 5;
+
+Sequence altered.
+
+SQL> select eseq.nextval from dual;
+
+   NEXTVAL
+----------
+        11
+
+SQL> /
+
+   NEXTVAL
+----------
+        12
+
+SQL> /
+
+   NEXTVAL
+----------
+        13
+
+SQL> /
+
+   NEXTVAL
+----------
+        14
+
+SQL> /
+
+   NEXTVAL
+----------
+        15
+
+SQL> /
+
+   NEXTVAL
+----------
+        16
+
+SQL> /
+
+   NEXTVAL
+----------
+        17
+
+SQL> /
+
+   NEXTVAL
+----------
+        18
+
+SQL> /
+
+   NEXTVAL
+----------
+        19
+
+SQL> /
+
+   NEXTVAL
+----------
+        20
+
+SQL> /
+
+   NEXTVAL
+----------
+         1
+
+SQL> /
+
+   NEXTVAL
+----------
+         2
+
+SQL> insert into emp(empno) values(eseq.nextval);
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> select empno from emp;
+
+     EMPNO
+----------
+         3
+         4
+         5
+         6
+         7
+         8
+         9
+        10
+      7369
+      7499
+      7521
+
+     EMPNO
+----------
+      7566
+      7654
+      7698
+      7782
+      7788
+      7839
+      7844
+      7876
+      7900
+      7902
+      7934
+
+22 rows selected.
+
+SQL> select * from user_sequences where sequence_name='ESEQ';
+
+SEQUENCE_NAME                   MIN_VALUE  MAX_VALUE INCREMENT_BY C O CACHE_SIZE LAST_NUMBER
+------------------------------ ---------- ---------- ------------ - - ---------- -----------
+ESEQ                                    1         20            1 Y N          5          11
+
+SQL> drop sequence eseq;
+
+Sequence dropped.
+
+
+SQL> create sequence eseq
+  2  start with 1
+  3  increment by 2
+  4  minvalue 1
+  5  maxvalue 20
+  6  cycle
+  7  cache 5;
+
+Sequence created.
+
+SQL> select eseq.nextval from dual;
+
+   NEXTVAL
+----------
+         1
+
+SQL> /
+
+   NEXTVAL
+----------
+         3
+
+SQL> /
+
+   NEXTVAL
+----------
+         5
+
+SQL> /
+
+   NEXTVAL
+----------
+         7
+
+SQL> /
+
+   NEXTVAL
+----------
+         9
+
+SQL> /
+
+   NEXTVAL
+----------
+        11
+
+SQL> /
+
+   NEXTVAL
+----------
+        13
+
+SQL> /
+
+   NEXTVAL
+----------
+        15
+
+SQL> /
+
+   NEXTVAL
+----------
+        17
+
+SQL> /
+
+   NEXTVAL
+----------
+        19
+
+SQL> /
+
+   NEXTVAL
+----------
+         1
+
+SQL> /
+
+   NEXTVAL
+----------
+         3
+
+SQL> select eseq.currval from dual;
+
+   CURRVAL
+----------
+         3
+
+SQL> select * from user_sequences where sequence_name='ESEQ';
+
+SEQUENCE_NAME                   MIN_VALUE  MAX_VALUE INCREMENT_BY C O CACHE_SIZE LAST_NUMBER
+------------------------------ ---------- ---------- ------------ - - ---------- -----------
+ESEQ                                    1         20            2 Y N          5          11
+
+SQL> drop sequence eseq;
+
+Sequence dropped.
+
+SQL> create sequence eseq;
+
+Sequence created.
+
+SQL> select * from user_sequences where sequence_name='ESEQ';
+
+SEQUENCE_NAME                   MIN_VALUE  MAX_VALUE INCREMENT_BY C O CACHE_SIZE LAST_NUMBER
+------------------------------ ---------- ---------- ------------ - - ---------- -----------
+ESEQ                                    1 1.0000E+28            1 N N         20           1
+
+SQL> drop sequence eseq;
+
+Sequence dropped.
+
+=====================================================================================================
+
+State True / False 
+
+1.The alter sequence command will affect only the future sequence numbers
+
+2.Cache option can be more than max value
+
+3.Before using currval for a sequence we must first increment the sequence with nextval
+
+4.When you use currval and nextval in the same select statement they have the same value
+
+
+Fill in Blanks :-
+
+1.Currval and nextval are __________ columns
+
+2._______________ option is used pre-allocate numbers for faster access
+
+3.To have a descending sequence ________ option will have minus sign
+
+===============================================================================================
+
+VIEW :-
+
+- View is like a window
+
+- View is a tailored presentation of the data contained in one ore more tables 
+
+- View takes the output of a query and treats it as a table
+
+- View does not have data of its own
+
+- View is called as STORED QUERY / VIRTUAL TABLE
+
+- View hides data dictionary
+
+select * from user_views where view_name='VIEWNAME';
+
+- View provides additional level of table security by restricting access to a predetermined set of rows or columns of table
+
+- Simplify commands for the user because they allow them to select information from multiple tables without knowing how to perform a join
+
+create or replace view <viewname> as select statement;
+
+select * from user_views where view_name='VIEWNAME';
+
+drop view <viewname>;
+	
+			Simple View	Complex View
+
+No Of Tables		One		One or More
+
+Having Functions	No		Yes
+
+Groups of data		No		Yes
+
+DML through view	Yes		Not Always
+
+We can perform all DML operations like insert,update,delete on simple view
+
+Any insertions,updations,deletions takes place on simple view that will be affected base table,base table to simple view
+
+We cannot perform DML operations like insert,update,delete on view, if view having functions,clauses,psuedo columns,..
+
+Just we write SELECT statement to view the data
+
+
+Eg:
+
+
+SQL> create or replace view emp_view as select * from emp;
+
+View created.
+
+SQL> select * from emp_view;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+        10
+         3
+         4
+         5
+         6
+         7
+         8
+         9
+
+22 rows selected.
+
+SQL> select * from emp;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+        10
+         3
+         4
+         5
+         6
+         7
+         8
+         9
+
+22 rows selected.
+
+SQL> insert into emp_view(empno) values(100);
+
+1 row created.
+
+SQL> select empno from emp_view;
+
+     EMPNO
+----------
+         3
+         4
+         5
+         6
+         7
+         8
+         9
+        10
+       100
+      7369
+      7499
+
+     EMPNO
+----------
+      7521
+      7566
+      7654
+      7698
+      7782
+      7788
+      7839
+      7844
+      7876
+      7900
+      7902
+
+     EMPNO
+----------
+      7934
+
+23 rows selected.
+
+SQL> select empno from emp;
+
+     EMPNO
+----------
+         3
+         4
+         5
+         6
+         7
+         8
+         9
+        10
+       100
+      7369
+      7499
+
+     EMPNO
+----------
+      7521
+      7566
+      7654
+      7698
+      7782
+      7788
+      7839
+      7844
+      7876
+      7900
+      7902
+
+     EMPNO
+----------
+      7934
+
+23 rows selected.
+
+SQL> delete from emp where ename is null;
+
+9 rows deleted.
+
+SQL> select * from emp_view;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+14 rows selected.
+
+SQL> select * from user_views where view_name='EMP_VIEW';
+
+VIEW_NAME                      TEXT_LENGTH
+------------------------------ -----------
+TEXT                                                                             TYPE_TEXT_LENGTH
+-------------------------------------------------------------------------------- ----------------
+TYPE_TEXT
+----------------------------------------------------------------------------------------------------
+OID_TEXT_LENGTH
+---------------
+OID_TEXT
+----------------------------------------------------------------------------------------------------
+VIEW_TYPE_OWNER                VIEW_TYPE                      SUPERVIEW_NAME                 E R
+------------------------------ ------------------------------ ------------------------------ - -
+EMP_VIEW                                76
+
+VIEW_NAME                      TEXT_LENGTH
+------------------------------ -----------
+TEXT                                                                             TYPE_TEXT_LENGTH
+-------------------------------------------------------------------------------- ----------------
+TYPE_TEXT
+----------------------------------------------------------------------------------------------------
+OID_TEXT_LENGTH
+---------------
+OID_TEXT
+----------------------------------------------------------------------------------------------------
+VIEW_TYPE_OWNER                VIEW_TYPE                      SUPERVIEW_NAME                 E R
+------------------------------ ------------------------------ ------------------------------ - -
+select "EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO" from emp
+
+VIEW_NAME                      TEXT_LENGTH
+------------------------------ -----------
+TEXT                                                                             TYPE_TEXT_LENGTH
+-------------------------------------------------------------------------------- ----------------
+TYPE_TEXT
+----------------------------------------------------------------------------------------------------
+OID_TEXT_LENGTH
+---------------
+OID_TEXT
+----------------------------------------------------------------------------------------------------
+VIEW_TYPE_OWNER                VIEW_TYPE                      SUPERVIEW_NAME                 E R
+------------------------------ ------------------------------ ------------------------------ - -
+
+
+VIEW_NAME                      TEXT_LENGTH
+------------------------------ -----------
+TEXT                                                                             TYPE_TEXT_LENGTH
+-------------------------------------------------------------------------------- ----------------
+TYPE_TEXT
+----------------------------------------------------------------------------------------------------
+OID_TEXT_LENGTH
+---------------
+OID_TEXT
+----------------------------------------------------------------------------------------------------
+VIEW_TYPE_OWNER                VIEW_TYPE                      SUPERVIEW_NAME                 E R
+------------------------------ ------------------------------ ------------------------------ - -
+
+
+VIEW_NAME                      TEXT_LENGTH
+------------------------------ -----------
+TEXT                                                                             TYPE_TEXT_LENGTH
+-------------------------------------------------------------------------------- ----------------
+TYPE_TEXT
+----------------------------------------------------------------------------------------------------
+OID_TEXT_LENGTH
+---------------
+OID_TEXT
+----------------------------------------------------------------------------------------------------
+VIEW_TYPE_OWNER                VIEW_TYPE                      SUPERVIEW_NAME                 E R
+------------------------------ ------------------------------ ------------------------------ - -
+
+
+VIEW_NAME                      TEXT_LENGTH
+------------------------------ -----------
+TEXT                                                                             TYPE_TEXT_LENGTH
+-------------------------------------------------------------------------------- ----------------
+TYPE_TEXT
+----------------------------------------------------------------------------------------------------
+OID_TEXT_LENGTH
+---------------
+OID_TEXT
+----------------------------------------------------------------------------------------------------
+VIEW_TYPE_OWNER                VIEW_TYPE                      SUPERVIEW_NAME                 E R
+------------------------------ ------------------------------ ------------------------------ - -
+                                                                                             N N
+
+VIEW_NAME                      TEXT_LENGTH
+------------------------------ -----------
+TEXT                                                                             TYPE_TEXT_LENGTH
+-------------------------------------------------------------------------------- ----------------
+TYPE_TEXT
+----------------------------------------------------------------------------------------------------
+OID_TEXT_LENGTH
+---------------
+OID_TEXT
+----------------------------------------------------------------------------------------------------
+VIEW_TYPE_OWNER                VIEW_TYPE                      SUPERVIEW_NAME                 E R
+------------------------------ ------------------------------ ------------------------------ - -
+
+
+SQL> drop view emp_view;
+
+View dropped.
+
+SQL> select empno from emp;
+
+     EMPNO
+----------
+      7369
+      7499
+      7521
+      7566
+      7654
+      7698
+      7782
+      7788
+      7839
+      7844
+      7876
+
+     EMPNO
+----------
+      7900
+      7902
+      7934
+
+14 rows selected.
+
+
+SQL> create or replace view dept_sum_vu(name,minsal,maxsal)
+  2  as select d.dname,min(e.sal),max(e.sal)
+  3  from emp e inner join dept d on e.deptno = d.deptno
+  4  group by d.dname;
+
+View created.
+
+SQL> select * from dept_sum_vu;
+
+NAME               MINSAL     MAXSAL
+-------------- ---------- ----------
+ACCOUNTING           1300       5000
+RESEARCH              800       3000
+SALES                 950       2850
+
+SQL> delete from dept_sum_vu;
+delete from dept_sum_vu
+            *
+ERROR at line 1:
+ORA-01732: data manipulation operation not legal on this view
+
+
+SQL> select * from dept_sum_vu;
+
+NAME               MINSAL     MAXSAL
+-------------- ---------- ----------
+ACCOUNTING           1300       5000
+RESEARCH              800       3000
+SALES                 950       2850
+
+SQL> drop view dept_sum_vu;
+
+View dropped.
+
+=================================================================================
+
+create or replace view pen_view as select * from order_master with read only;
+
+update pen_view set o_status='p';
+
+............................................................
+
+Creating Views with Errors :-
+
+To create a view with errors, include the FORCE option in the CREATE VIEW 
+
+create force view ven as seelct * from vendor_master;
+
+alter view ven compile;
+
+....................................................................
+
+
+DML statements and Join Views :-
+
+Joining of tables is also possible in a view. Any insert,update,delete on a join view can modify only one underlying base table. But it is possible through INSTEAD OF trigger.
+
+create view orders as select
+o.orderno,odate,vencode,itemcode,qty_ord
+from order_master o,order_detail d where o.orderno = d.orderno;
+
+update orders set qty_ord=qty_ord * 2 where itemcode='i001';
+
+The above update statement would be disallowed on the ORDERS view
+
+select * from orders;
+
+............................................................................................
+
+Functions in View :-
+
+Single row functions comprising of number,character,date,group functions and expressions can also be used in views
+
+create view itemview as select itemcode,sum(qty_ord) from order_detail group by itemcode;
+
+.........................................................................................
+
+Partition View :-
+
+With partition views, the data resides in seperate tables. These tables are then brought together at runtime using the relational operator UNION ALL 
+
+create view <viewname> as 
+select * from <tablename>
+union all
+select * from <tablename>
+union all
+select * from <tablename>
+
+Eg:-
+
+create view sales as
+select * from sales_1
+union all
+select * from sales_2
+union all
+select * from sales_3
+
+==================================================================================
+
+State True or False 
+
+1.Operations performed on views does not affect the base table
+
+2.A view cannot be created without a table
+
+3.Only key preserved table of a join view can be updated
+
+
+Fill in Blanks 
+
+1.To impose constraint on view ____________ option is used
+
+2.__________________ command is used to  compile view
+
+3.While using functions in view _______________ is a must
+
+====================================================================================
+
+Questions :
+
+
+1.What is meant by cartesian product
+
+2.What is the purpose of joins
+
+3.Howmany types of joins
+
+4.What is the difference between INNER JOIN and OUTER JOIN
+
+5.What is the difference between COLUMN ALIAS and TABLEALIAS
+
+6.What is meant by column ambiguity
+
+7.What is meant by composite constraint
+
+8.Is it possible to have more than one primary key in a table
+
+9.What is a foreign key
+
+10.What is the use of ON DELETE CASCADE clause
+
+11.What is the use of SUBQUERIES
+
+12.What is the difference between SUBQUERY and CORRELATED SUBQUERY
+
+13.Display alternate rows from an existing table
+
+14.Find first highest salary
+
+15.What is the use of sequence
+
+16.What is a view
+
+17.What are differences between SIMPLE VIEW and COMPLEX VIEW
+
+18.Is it possible to write check constraint on view
+
+19.Find second highest salary
+
+20.How can i use functions in View
+
+================================================================================================
+
+INDEX :-
+
+- Index is a database object
+
+- We can create indexes explicitly to speed up SQL statement execution on a table
+
+- Similar to the indexes in books that helps us to location information faster, an Oracle index provides a faster access path to table data
+
+- Index points directly to the location of the rows containing the value
+
+- We can create index on a column or a group of columns in a table
+
+UNIQUE INDEX
+
+	- creaing automatically on PRIMARY KEY column / UNIQUE constraint column in a table
+
+NON-UNIQUE INDEX
+
+	creating manually
+
+	create index <indexname> on tablename(columnlist);
+
+	drop index <indexname>;
+
+select * from user_indexes where table_name='TABLENAME';
+
+select * from user_ind_columns where table_name='TABLENAME';
+
+When to create an index :-
+
+- Column is frequently written in join condition
+
+- Column is having wide range of NULL values
+
+- Column is having huge amount of data
+
+When not to create an index :-
+
+- Table is very small
+
+- Table is frequently updated
+
+Eg:-
+
+create index i1 on emp(ename);
+
+select * from user_indexes where table_name='EMP';
+
+select * from user_ind_columns where table_name='EMP';
+
+select ename from emp;
+
+drop index i1;
+
+create unique index i1 on order_master(orderno);
+
+- A unique index is automatically created when we create unique or primary key constraint.
+
+- Alternatively a constraint is imposed on the column we creating unique index
+
+- We cannot create index for a column which is already indexed
+
+Composite indexes :-
+
+A composite index is an index created on multiple columns of a table
+
+Columns in  composite index can appear in any order and need not be adjacent columns of the table
+
+Composite indexes are enhance the retrieval speed of data for select statements in which the 'where' clause .
+
+create index i2 on order_detail(orderno,itemcode);
+
+---------------------------------------------------------------------------------
+
+Differences between Regular Table and Index-Organized Table :-
+
+Regular Table :
+
+- ROWID uniquely identifies a row, primary key can be optionally specified
+
+- Implicit ROWID column; allows building physical secondary indexes
+
+- ROWID based access
+
+- Sequential scan returns all rows
+
+- UNIQUE constraint and triggers allowed
+
+- A table can be stored in a cluster containing other tables
+
+- Distribution,replication and parititioning supported
+
+
+Index-Organized table :-
+
+- Primary key uniquely identifies a row: primary key must be specified
+
+- No implicit ROWID column ; cannot have physical secondary indexes
+
+- Primary key based access
+
+- Full-index scan returns all rows in primary key order
+
+- UNIQUE constraint not allowed , but triggers are allowed
+
+- An index organized table cannot be stored in a cluster
+
+- Distribution,Replication and partitioning not supported
+
+==================================================================================
+
+Summary :-
+
+- Database objects, other than table, like views, synonym, sequences and indexes 
+
+- The database object synonym is used as an aliasname for tables and views
+
+- A synonym can either be public or private
+
+- The database object sequence is used to generate unique sequential integer values
+
+- A view is a virutal table / stored query
+
+- Group functions,single row functions, group by clause and joins can be performed on views
+
+- While querying a table, oracle uses indexes to locate the requested rows efficiently and effectively
+
+....................................................................
+
+State True or False 
+
+1.More number of indexes on a table will improve the performance multifold
+
+2.Composite index columns must be adjacent columns of a table
+
+3.Primary key is a must for index organized table
+
+
+Fill-in Blanks :-
+
+1.Creation of ____________ index imposes a constraint on that column
+
+2.______________ index has less storage when compared to normal index
+
+3.______________ partition index is not possible in Oracle
+
+
+=====================================================================================
+
+DCL (Data Control Language)
+
+grant
+
+revoke
+
+grant - granting all permissions on object to others
+
+grant all on object to others;
+
+all - insert,update,delete,select
+
+object - table / view/ synonym
+
+others - other user
+
+grant insert,update on object to others;
+
+revoke - revertting all permissions on object from others
+
+revoke all on object from others;
+
+revoke delete on object from others;
+
+Creating a User account :-
+
+create user <username> identified by <password>;
+
+grant connect,resource to <username>;
+
+select * from all_users;
+
+select username,account_status from dba_users;
+
+alter user <username> identified by <password> account lock;
+
+alter user <username> identified by <password> account unlock;
+
+drop user <username>;
+
+Eg:-
+
+
+SQL> create user Zensar3 identified by z;
+
+User created.
+
+SQL> grant connect,resource to Zensar3;
+
+Grant succeeded.
+
+SQL> select * from all_users where username='Zensar3';
+
+no rows selected
+
+SQL> select * from all_users where username='ZENSAR3';
+
+USERNAME                          USER_ID CREATED
+------------------------------ ---------- ---------
+ZENSAR3                                59 30-SEP-21
+
+SQL> select username,account_status
+  2  from dba_users where username='ZENSAR3';
+
+USERNAME                       ACCOUNT_STATUS
+------------------------------ --------------------------------
+ZENSAR3                        OPEN
+
+SQL> alter user Zensar3 identified by z account lock;
+
+User altered.
+
+SQL> select username,account_status
+  2  from dba_users where username='ZENSAR3';
+
+USERNAME                       ACCOUNT_STATUS
+------------------------------ --------------------------------
+ZENSAR3                        LOCKED
+
+SQL> alter user Zensar3 identified by z account unlock;
+
+User altered.
+
+SQL> select username,account_status
+  2  from dba_users where username='ZENSAR3';
+
+USERNAME                       ACCOUNT_STATUS
+------------------------------ --------------------------------
+ZENSAR3                        OPEN
+
+SQL> drop user Zensar3;
+
+User dropped.
+
+======================================================================================
+
+
+SQL> create user Zensar3 identified by z;
+
+User created.
+
+SQL> grant connect,resource to Zensar3;
+
+Grant succeeded.
+
+SQL> select user from dual;
+
+USER
+------------------------------
+SCOTT
+
+SQL> select empno,ename from emp where ename='JONES';
+
+     EMPNO ENAME
+---------- ----------
+      7566 JONES
+
+SQL> grant all on emp to zensar3;
+
+Grant succeeded.
+
+SQL> revoke delete on emp from zensar3;
+
+Revoke succeeded.
+
+SQL> revoke all on emp from zensar3;
+
+Revoke succeeded.
+
+=========================================================================================
+
+
+SQL> connect Zensar3/z
+Connected.
+SQL> select user from dual;
+
+USER
+------------------------------
+ZENSAR3
+
+SQL> select empno,ename from emp where ename='JONES';
+select empno,ename from emp where ename='JONES'
+                        *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> select empno,ename from scott.emp where ename='JONES';
+
+     EMPNO ENAME
+---------- ----------
+      7566 JONES
+
+SQL> insert into scott.emp(empno) values(100);
+
+1 row created.
+
+SQL> delete from scott.emp where empno=100;
+delete from scott.emp where empno=100
+                  *
+ERROR at line 1:
+ORA-01031: insufficient privileges
+
+
+SQL> select * from scott.emp;
+select * from scott.emp
+                    *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+=============================================================================================
+
+TCL (Transaction Control Language)
+
+commit
+
+rollback
+
+
+SQL> select * from emp2;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+SQL> select * from emp3;
+
+     EMPNO ENAME      JOB              SAL     DEPTNO
+---------- ---------- --------- ---------- ----------
+      7369 SMITH      CLERK            800         20
+      7876 ADAMS      CLERK           1100         20
+      7900 JAMES      CLERK            950         30
+      7934 MILLER     CLERK           1300         10
+
+SQL> delete from emp2 where rownum <=2;
+
+2 rows deleted.
+
+SQL> select * from emp2;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> select * from emp2;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+SQL> delete from emp2 where rownum <=2;
+
+2 rows deleted.
+
+SQL> select * from emp2;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+SQL> commit;
+
+Commit complete.
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> select * from emp2;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+
+=============================================================================================
+
+LOCKS :-
+
+Table1
+	User1	
+	User2
+	User3
+	User4
+	User5
+
+Oracle automatically uses different types of locks to control concurrent access to data and to prevent destructive interaction between users.
+
+Oracle automatically locks a resource on behalf of a transaction
+
+This is done to prevent other transactions from doing something also requiring exclusive access to the same resource.
+
+Two types of locks :-
+
+Row level locks (For specific rows)
+
+Table level locks (For entire table)
+
+Row level locks :-
+
+In the row level lock, a rows is locked exclusively so that other users cannot modify the row until the transaction holding the lock is committed or rolled back.
+
+SELECT ... FOR UPDATE clause :-
+
+The select command when used with for update of clause places on exclusive lock on one or more rows of a table
+
+This command can be used to lock the rows that would be updated later
+
+select * from order_master where vencode='v001' for update of odate,del_date;
+
+update order_master set del_date=sysdate where vencode='v001';
+
+Table level locks :-
+
+A table level lock will protect table data 
+
+A table lock can be held in several modes :
+
+share mode
+
+share update mode
+
+exclusive mode
+
+lock table <tablename> in mode;
+
+share mode :-
+
+A share lock locks the table allowing other users to only query (SELECT) but not insert,update or delete until release the lock
+
+share update mode :-
+
+While updating lock the table
+
+exclusive mode
+
+It is similar to share mode, but it is for only one user
+
+lock table <tablename> in share mode;
+
+lock table <tablename> in share update mode;
+
+lock table <tablename> in exclusive mode;
+
+When we issue COMMIT / ROLLBACK statement then lock will be released
+
+===============================================================================================
+
+======================================================================================================
+
+1.List the emp whose sal<his manager but more than any other manager.
+
+a) select distinct W.empno,W.ename,W.sal
+from (select w.empno,w.ename,w.sal from emp w,emp m where
+w.mgr = m.empno and w.sal<m.sal) W,
+(select * from emp where empno in (select mgr from emp)) A
+where W.sal > A.sal; (OR)
+
+B) select * from emp w,emp m where w.mgr = m.empno and w.sal < m.sal
+and w.sal > any (select sal from emp where empno in (select mgr from emp));
+
+2.List the employee names and his average salary department wise.
+
+A)select d.deptno, round(avg(nvl2(e1.comm, e1.sal+e1.comm, e1.sal))) avg, e2.ename from emp e1, emp e2, dept d where d.deptno =e1.deptno and d.deptno = e2.deptno group by d.deptno, e2.ename; (or)
+
+B) select d.maxsal,e.ename,e.deptno as "current sal" from emp e,
+(select avg(Sal) maxsal,deptno from emp group by deptno) d
+where e.deptno=d.deptno;
+
+3. Find out least 5 earners of the company.
+
+A) select * from emp e where 5> (select count(*) from emp where e.sal >sal); (or)
+
+B)select rownum rank,empno,ename,job,sal from (select * from emp order by sal asc) where rownum < 6 ; 
+(or)
+
+C)select * from emp e where 5 >(select count(distinct sal) from emp where e.sal > sal);
+
+4. Find out emps whose salaries greater than salaries of their managers.
+
+A) select * from emp w,emp m where w.mgr = m.empno and w.sal> m.sal; (OR)
+
+B)select * from emp e ,(select * from emp where empno in (select mgr from emp)) a
+where e.sal >a.sal and e.mgr = a.empno
+
+5. List the managers who are not working under the president.
+
+A) select * from emp where empno in(select mgr from emp) and mgr not in
+(select empno from emp where job = 'PRESIDENT')
+
+6. List the records from emp whose deptno isnot in dept.
+
+7. List the Name , Salary, Comm and Net Pay is more than any other employee.
+
+A) Select e.ename,e.sal,e.comm,nvl2(comm,sal+comm,sal) NETPAY
+from emp e
+where nvl2(comm,sal+comm,sal) > any (select sal from emp where empno =e.empno) ;
+
+8. List the Enames who are retiring after 31-Dec-89 the max Job period is 20Y.
+
+A) select ename from emp where add_months(hiredate,240) > '31-DEC-89';
+
+B) select ename from emp
+where add_months(hiredate,240) > to_date('31-DEC-89','DD-MON-RR');
+
+9. List those Emps whose Salary is odd value.
+
+A) select * from emp where mod(sal,2) = 1;
+
+10. List the emp's whose Salary contain 3 digits.
+
+A) select * from emp where length (sal) = 3;
+
+11. List the emps who joined in the month of DEC.
+
+A) select * from emp where to_char(hiredate,'MON') ='DEC'; (OR)
+
+B)select * from emp where to_char(hiredate,'MON') in ('DEC'); (OR)
+
+C)select * from emp where to_char(hiredate,'MONTH') like 'DEC%';
+
+12. List the emps whose names contains 'A'.
+
+A) select * from emp where ename like '%A%';
+
+13. List the emps whose Deptno is available in his Salary.
+
+A) select * from emp where instr(sal,deptno) > 0;
+
+14. List the emps whose first 2 chars from Hiredate=last 2 characters of Salary.
+
+A) select * from emp
+where substr(hiredate,1,2) = substr(sal,length(sal)-1,length(sal));
+
+15. List the emps Whose 10% of Salary is equal to year of joining.
+
+A) select * from emp where to_char(hiredate,'YY') in (select .1*sal from emp);
+
+16. List first 50% of chars of Ename in Lower Case and remaining are upper Case.
+
+A)select lower(substr(ename,1,round(length(ename)/2)))
+||substr(ename,round(length(ename)/2)+1,length(ename)) from emp ; (OR)
+
+B) select lower(substr(ename,1,ciel(length(ename)/2)))
+
+|| substr(ename,ciel(length(ename)/2)+1,length(ename)) from emp ;
+
+17. List the Dname whose No. of Emps is =to number of chars in the Dname.
+
+A) select * from dept d where length(dname) in (select count(*) from emp e where e.deptno = d.deptno ); 
+(or)
+
+B)select d.dname,count(*) from emp e ,dept d where e.deptno = d.deptno group by d.dname having count(*) = length (d.dname);
+
+18. List the emps those who joined in company before 15th of the month.
+
+A) select * from emp where to_char(hiredate,'DD') < '15';
+
+19. List the Dname, no of chars of which is = no. of emp's in any other Dept.
+
+A) select * from dept d where length(dname) in (select count(*) from emp where d.deptno <> deptno group by deptno ); (or)
+
+B)select * from dept where length(dname) = any (select count(*) from emp where d.deptno <> deptno group by deptno);
+
+C)select * from dept d , (select count(*) s,e.deptno "M"from emp e group by e.deptno) d1
+where length(dname)=d1.s and d1.M <>d.deptno;
+
+20. List the emps who are working as Managers.
+
+A) select * from where job = 'MANAGER'; (or)
+
+B)select * from emp where empno in (select mgr from emp );
+
+21. List THE Name of dept where highest no.of emps are working.
+
+A) select dname from dept where deptno in
+(select deptno from emp group by deptno
+having count(*) in(select max(count(*)) from emp group by deptno) );
+
+22. Count the No.of emps who are working as 'Managers'(using set option).
+
+A)select count(*)
+from(select * from emp minus select * from emp where job != 'MANAGER')
+
+23. List the emps who joined in the company on the same date.
+
+A) select * from emp e where hiredate in
+(select hiredate from emp where e.empno <> empno);
+
+24. List the details of the emps whose Grade is equal to one tenth of Sales Dept.
+
+A) select * from emp e,salgrade s
+where e.sal between s.losal and s.hisal and
+s.grade = 0.1* (select deptno from dept where dname = 'SALES');
+
+25. List the name of the dept where more than average no. of emps are working.
+
+A) select d.dname from dept d, emp e where e.deptno = d.deptno
+group by d.dname
+having count(*) > (select avg(count(*)) from emp group by deptno);
+
+26. List the Managers name who is having max no.of emps working under him.
+
+A)select m.ename,count(*) from emp w,emp m
+where w.mgr = m.empno
+group by m.ename
+having count(*) = (select max(count(*)) from emp group by mgr);
+
+(OR)
+
+B) select * from emp where empno = (select mgr from emp group by mgr having count(*) = (select max(count(*)) from emp group by mgr)) ;
+
+27. List the Ename and Sal is increased by 15% and expressed as no.of Dollars.
+
+A) select ename,to_char(1.15*sal,'$99,999') as "SAL" from emp; (only for $ it works)
+
+B) select ename,'$'||1.15*sal “SAL” from emp;
+
+28. Produce the output of EMP table 'EMP_AND_JOB' for Ename and Job.
+
+A) select ename|| job as "EMP_AND_JOB" from emp ;
+
+29. Produce the following output from EMP.
+EMPLOYEE
+SMITH (clerk)
+ALLEN (Salesman)
+
+A) select ename || '('|| lower(job)||')' as “EMPLOYEE” from emp;
+
+30) List the emps with Hire date in format June 4, 1988.
+
+A) select empno,ename,sal, to_char(hiredate,'MONTH DD,YYYY') from emp;
+
+31) Print a list of emp's Listing 'just salary' if Salary is more than 1500, on target if Salary is 1500 and 'Below 1500' if Salary is less than 1500.
+
+A) select empno,ename,sal|| 'JUST SALARY' "SAL" from emp where sal > 1500 union
+select empno,ename, sal|| 'ON TARGET' "SAL" from emp where sal = 1500
+union
+select empno,ename, sal|| 'BELOW 1500' "SAL" from emp where sal < 1500; (OR)
+
+B)select empno,ename,sal,job,
+case
+when sal = 1500 then 'ON TARGET'
+when sal < 1500 then 'BELOW 1500'
+when sal > 1500 then 'JUST SALARY'
+else 'nothing'
+end "REVISED SALARY"
+from emp;
+
+32) Write a query which return the day of the week for any date entered in format 'DD-MM-YY'.
+
+A) select to_char(to_date('& s','dd-mm-yy'),'day') from dual ;
+
+33) Write a query to calculate the length of service of any employee with the company, use DEFINE to avoid repetitive typing of functions.
+
+A) DEFINE service = ((months_between(sysdate,hiredate))/12)
+
+B)Select empno,ename,&service from emp where ename = '& name';
+
+34) Give a string of format 'NN/NN', verify that the first and last two characters are numbers and that the middle character is'/'. Print the expression 'YES' if valid, 'NO' if not valid. Use the following values to test your solution. '12/34','01/1a', '99/98'.
+
+35) Emps hired on or before 15th of any month are paid on the last Friday of that month those hired after 15th are paid on the first Friday of the following month. Print a list of emps their hire date and the first pay date. Sort on hire date.
+
+A) select ename,hiredate,next_day(last_day(hiredate),'FRIDAY')-7 from emp where to_char(hiredate,'DD') <=15
+union
+select ename,hiredate,next_day(last_day(hiredate),'FRIDAY') from emp where to_char(hiredate,'DD') > 15;
+
+36) Count the no. of characters with out considering spaces for each name.
+
+A) select length(replace(ename,' ',null)) from emp;
+
+37) Find out the emps who are getting decimal value in their Sal without using like operator.
+
+A) select * from emp where instr(sal,'.',1,1) > 0;
+
+38) List those emps whose Salary contains first four digit of their Deptno.
+
+A) select * from emp where instr(to_char(sal,,9999),deptno,1,1)>0 and instr(to_char(sal,9999),deptno,1,2)> 0 ;
+
+39) List those Managers who are getting less than his emps Salary.
+
+A) select distinct m.ename,m.sal from emp w,emp m where w.mgr = m.empno and w.sal>m.sal;
+
+B)select * from emp w where sal < any ( select sal from emp where w.empno=mgr);
+
+C)select * from emp w where empno in ( select mgr from emp where w.sal<sal);
+
+40) Print the details of all the emps who are sub-ordinates to Blake.
+
+A) select * from emp where mgr in (select empno from emp where ename = 'BLAKE');
+
+41) List the emps who are working as Managers using co-related sub-query.
+
+A) select * from emp where empno in (select mgr from emp);
+
+42) List the emps whose Mgr name is 'Jones' and also with his Manager name.
+
+A) select w.ename,m.ename,(select ename from emp where m.mgr = empno) "his MANAGER"
+from emp w,emp m where w.mgr = m.empno and m.ename = 'JONES'; (or)
+
+B) select e.ename,w.ename,m.ename from emp e,emp w,emp m where e.mgr = w.empno and w.ename = 'JONES' and w.mgr = m.empno;
+
+43) Define a variable representing the expression used to calculate on emps total annual remuneration use the variable in a statement, which finds all emps who can earn 30000 a year or more.
+
+A) Set define on
+
+B)Define annual = 12*nvl2(comm.,sal+comm.,sal) (here define variable is a session variable)
+
+C)Select * from emp where &annual > 30000;
+
+44) Find out how may Managers are their in the company.
+
+A) select count(*) from emp where job = 'MANAGER'; (or)
+
+B)select count(*) from emp where empno in (select mgr from emp); (or)
+
+C)select count(distinct m.empno) from emp w,emp m where w.mgr = m.empno ;
+
+45) Find Average salary and Average total remuneration for each Job type. Remember Salesman earn commission.secommm
+
+A) select avg(sal),avg(sal+nvl(comm,0)) from emp;
+
+46) Check whether all the emps numbers are indeed unique.
+
+A) select empno,count(*) from emp group by empno;
+
+47) List the emps who are drawing less than 1000 Sort the output by Salary.
+
+A)select * from emp where sal < 1000 order by sal;
+
+48) List the employee Name, Job, Annual Salary, deptno, Dept name and grade who earn 36000 a year or who are not CLERKS.
+
+A)selecte.ename,e.job,(12*e.sal)"ANNUALSALARY", e.deptno,d.dname,s.grade
+from emp e,dept d ,salgrade s where e.deptno = d.deptno and e.sal between s.losal and s.hisal
+and (((12*e.sal)>= 36000) or (e.job != 'CLERK'))
+
+49) Find out the Job that was filled in the first half of 1983 and same job that was filled during the same period of 1984.
+
+A) select * from emp where (to_char(hiredate,'MM ') <= 06 and to_char(hiredate,'YYYY') = 1984) and job in (select job from emp where to_char(hiredate,'MM' ) <= 06 and to_char(hiredate,'YYYY') <= 1983) ;
+
+50) Find out the emps who joined in the company before their Managers.
+
+A) select * from emp w,emp m where w.mgr = m.empno and
+w.hiredate< m.hiredate;(or)
+
+B) select * from emp e where hiredate < (select hiredate from emp where empno = e.mgr)
+
+51) List all the emps by name and number along with their Manager's name and number. Also List KING who has no 'Manager'.
+
+A) select w.empno,w.ename,m.empno,m.ename from emp w,emp m where w.mgr= m.empno(+);
+
+52) Find all the emps who earn the minimum Salary for each job wise in ascending order.
+
+A) select * from emp where sal in
+(select min(sal) from emp group by job)
+order by sal asc;
+
+53) Find out all the emps who earn highest salary in each job type. Sort in descending salary order.
+
+A) select * from emp where sal in
+(select max(sal) from emp group by job)
+order by sal desc;
+
+54) Find out the most recently hired emps in each Dept order by Hiredate.
+
+A) select * from emp e where hiredate in
+(select max(hiredate) from emp where e.deptno = deptno )
+order by hiredate;
+
+55) List the employee name,Salary and Deptno for each employee who earns a salary greater than the average for their department order by Deptno.
+
+A) select * from emp e
+where sal > (select avg(sal) from emp where e.deptno = deptno );
+
+B) select e.ename,e.sal,e.deptno from emp e,(select avg(sal) A,deptno D from
+emp group by deptno) D1 where D1.D = e.deptno and e.sal > D1.A;
+
+56) List the Deptno where there are no emps.
+
+A) select deptno ,count(*) from emp
+group by deptno
+having count(*) = 0;
+
+57) List the No.of emp's and Avg salary within each department for each job.
+
+A) select count(*),avg(sal),deptno,job from emp
+group by deptno,job;
+
+58) Find the maximum average salary drawn for each job except for 'President'.
+
+A) select max(avg(sal)) from emp where job != 'PRESIDENT' group by job;
+
+59) Find the name and Job of the emps who earn Max salary and Commission.
+
+A) select * from emp where sal = (select max(sal) from emp) and comm. is not null;
+
+60) List the Name, Job and Salary of the emps who are not belonging to the department 10 but who have the same job and Salary as the emps of dept 10.
+
+A) select ename,job,sal from emp where deptno != 10 and job in (select job from emp where deptno = 10)
+and sal in (select sal from emp where deptno = 10);
+
+61) List the Deptno, Name, Job, Salary and Sal+Comm of the SALESMAN who are earning maximum salary and commission in descending order.
+
+A)select deptno,name,job,sal,sal+nvl(comm.,0) from emp where job = 'SALESMAN' and sal in (select max(sal+nvl(comm.,0)) from emp where comm. is not null)
+Order by (sal +nvl(comm.,0)) desc;
+
+62) List the Deptno, Name, Job, Salary and Sal+Comm of the emps who earn the second highest earnings (sal + comm.).
+
+A) select deptno,ename,sal,job,sal+nvl(comm,0) from emp e where 2 = (select count(distinct sal+nvl(comm,0)) from emp where (e.sal+nvl(comm.,0))<(sal+nvl(comm.,0));
+
+63) List the Deptno and their average salaries for dept with the average salary less than the averages for all department
+
+A) select deptno,avg(sal) from emp group by deptno
+having avg(sal) <(select avg(Sal) from emp);
+
+64) List out the Names and Salaries of the emps along with their manager names and salaries for those emps who earn more salary than their Manager.
+
+A) select w.ename,w.sal,m.ename,m.sal from emp w,emp m
+where w.mgr = m.empno and w.sal > m.sal;
+
+65) List out the Name, Job, Salary of the emps in the department with the highest average salary.
+
+A) select * from emp where deptno in
+(select deptno from emp e
+having avg(sal) =(select max(avg(sal)) from emp group by deptno)
+group by deptno);
+
+66) List the empno,sal,comm. Of emps.
+
+A) select empno,sal,comm. from emp;
+
+67) List the details of the emps in the ascending order of the sal.
+
+A) select * from emp order by sal asc;
+
+68) List the dept in the ascending order of the job and the desc order of the emps print empno, ename.
+
+A) select * from emp e order by e.job asc,e.empno desc ;
+
+69) Display the unique dept of the emps.
+
+A)select * from dept where deptno in (select unique deptno from emp);
+
+70) Display the unique dept with jobs.
+
+A) select unique deptno ,job from emp ;
+
+71) Display the details of the blake.
+
+A) select * from emp where ename = 'BLAKE';
+
+72) List all the clerks.
+
+A) select * from emp where job = 'CLERK';
+
+73) list all the employees joined on 1st may 81.
+
+A) select * from emp where hiredate = '01-MAY-81';
+
+74) List the empno,ename,sal,deptno of the dept 10 emps in the ascending order of salary.
+
+A) select e.empno,e.ename,e.sal,e.deptno from emp where e.deptno = 10
+order by e.sal asc;
+
+75) List the emps whose salaries are less than 3500.
+
+A) select * from emp where sal <3500;
+
+76) List the empno,ename,sal of all the emp joined before 1 apr 81.
+
+A) select e.empno ,e.ename .e.sal from emp where hiredate <'01-APR-81';
+
+77) List the emp whose annual sal is <25000 in the asc order of the salaries.
+
+A) select * from emp where (12*sal) < 25000 order by sal asc;
+
+78) List the empno,ename,annsal,dailysal of all the salesmen in the asc ann sal
+
+A) select e.empno,e.ename ,12*sal "ANN SAL" , (12*sal)/365 "DAILY SAL" from emp e
+where e.job = 'SALESMAN'
+order by "ANN SAL" asc ;
+
+79) List the empno,ename,hiredate,current date & exp in the ascending order of the exp.
+
+A) select empno,ename,hiredate,(select sysdate from dual),((months_between(sysdate,hiredate))/12) EXP
+from emp order by EXP asc;
+
+80) List the emps whose exp is more than 10 years.
+
+A) select * from emp where ((months_between(sysdate,hiredate))/12) > 10;
+
+81) List the empno,ename,sal,TA30%,DA 40%,HRA 50%,GROSS,LIC,PF,net,deduction,net allow and net sal in the ascending order of the net salary.
+
+82) List the emps who are working as managers.
+
+A) select * from emp where job = 'MANAGER';
+
+83) List the emps who are either clerks or managers.
+
+A) select * from emp where job in ('CLERK','MANAGER');
+
+84) List the emps who have joined on the following dates 1 may 81,17 nov 81,30 dec 81
+
+A) select * from emp where to_char(hiredate,'DD-MON-YY') in
+('01-MAY-81','17-NOV-81','30-DEC-81');
+
+85) List the emps who have joined in the year 1981.
+
+A) select * from emp where to_char(hiredate,'YYYY') = '1981';
+
+86) List the emps whose annual sal ranging from 23000 to 40000.
+
+A) select * from emp where (12* sal) between 23000 and 40000;
+
+87) List the emps working under the mgrs 7369,7890,7654,7900.
+
+A) select * from emp where mgr in ( 7369,7890,7654,7900);
+
+88) List the emps who joined in the second half of 82.
+
+A)select * from emp where hiredate between '01-JUL-82' and '31-DEC-82';
+
+89) List all the 4char emps.
+
+A) select * from emp where length (ename) = 4;
+
+90) List the emp names starting with 'M' with 5 chars.
+
+A) select * from emp where ename like 'M%' and length (ename) = 5;
+
+91) List the emps end with 'H' all together 5 chars.
+
+A) select * from emp where ename like '%H' and length (ename) = 5;
+
+92) List names start with 'M'.
+
+A) select * from emp where ename like 'M%';
+
+93) List the emps who joined in the year 81.
+
+A) select * from emp where to_char(hiredate,'YY') = '81';
+
+94) List the emps whose sal is ending with 00.
+
+A)select * from where sal like '%00';
+
+95) List the emp who joined in the month of JAN.
+
+A) select * from emp where to_char(hiredate,'MON') = 'JAN'; (OR)
+
+B)select * from emp where to_char (hiredate,'MM') = 1;
+
+96) Who joined in the month having char 'a'.
+
+A) select * from emp where to_char (hiredate,'MONTH') like'%A%'; (OR)
+
+B)select * from emp where instr(to_char(hiredate,'MONTH'),'A') >0;
+
+97) Who joined in the month having second char 'a'
+
+A) select * from emp where to_char(hiredate,'MON') like '_A%'; (OR)
+
+B)select * from emp where instr(to_char(hiredate,'MON'),'A') = 2;
+
+98) List the emps whose salary is 4 digit number.
+
+A) select * from emp where length (sal) = 4;(OR)
+
+B)select * from emp where sal between 999 and 9999;
+
+99) List the emp who joined in 80's.
+
+A) select * from emp where to_char(hiredate,'YY') between '80' and '89'; (OR)
+
+B)select * from emp where to_char(hiredate,'YY') >= '80' and to_char(hiredate,'YY') < '90';
+
+100) List the emp who are clerks who have exp more than 8ys.
+
+A) select * from emp where job = 'CLERK' and (months_between(sysdate,hiredate) /12) > 8;
